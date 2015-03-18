@@ -1,0 +1,9 @@
+iframe.scheduleScript {
+  z-index: 99999999 !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  height: 100% !important;
+  width: 400px !important;
+  background-color: #ffffff !important;
+}
