@@ -1,0 +1,30 @@
+<!doctype html>
+<html data-ng-app="canvasApp" ng-csp>
+	<head>
+	    <meta charset="utf-8">
+		<meta name="description" content="A basic template for a Chrome Extension using Twitter Bootstrap 3">
+		<meta name="author" content="Elliot Hesp">
+		
+		<title>Canvas Tasklist </title>
+		
+		<!-- Scripts -->
+		<script src="js/lib/angular.min.js"></script>
+		<script src="js/lib/jquery-2.0.3.min.js"></script>
+		<script src="js/lib/bootstrap.min.js"></script>
+		<script src="js/lib/ui-bootstrap-custom-0.12.1.js"></script>
+		<script src="js/lib/ui-bootstrap-custom-0.12.1.min.js"></script>
+		<script src="js/lib/ui-bootstrap-custom-tpls-0.12.1.js"></script>
+		<script src="js/lib/ui-bootstrap-custom-tpls-0.12.1.min.js"></script>
+		<script src="js/app/app.js"></script>
+        <script src="js/app/popup.js"></script>
+		
+		<!-- Cascading Style Sheets -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="css/custom.css" rel="stylesheet" media="screen">		
+	</head>
+	
+	<body data-ng-controller="MainController">
+		<div data-ng-include="current">
+		</div>
+	</body>
+</html>
