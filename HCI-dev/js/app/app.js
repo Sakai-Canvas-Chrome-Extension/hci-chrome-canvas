@@ -1,1 +1,1 @@
-﻿var myApp = angular.module('canvasApp', ['ui.bootstrap']);
+﻿var myApp = angular.module('canvasApp', ['ui.bootstrap','chromeStorage']);

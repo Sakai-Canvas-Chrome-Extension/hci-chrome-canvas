@@ -49,7 +49,10 @@ myApp.controller("MainController", function ($scope, $http) {
             });
     }();
 });
-
+myApp.controller('PopoverDemoCtrl', function ($scope) {
+  $scope.dynamicPopover = 'Hello, World!';
+  $scope.dynamicPopoverTitle = 'Title';
+});
 myApp.controller("DatepickerCtrl", function ($scope, $http) {
     $scope.today = function() {
         var d = new Date();
