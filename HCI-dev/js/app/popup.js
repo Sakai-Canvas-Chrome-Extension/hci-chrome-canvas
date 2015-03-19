@@ -22,6 +22,18 @@ myApp.service('pageInfoService', function() {
 */
 myApp.controller("MainController", function ($scope, $http) {
     $scope.views = ['startpage.html', 'tasklist.html', 'newtask.html'];
+    $scope.classColors = [
+      {'background-color': '#555587'}, {'background-color': '#92213A'}, 
+      {'background-color': '#0066A4'}, {'background-color': '#56004E'}, 
+      {'background-color': '#F89829'}, {'background-color': '#E50278'}, 
+      {'background-color': '#435555'}, {'background-color': '#166621'}, 
+      {'background-color': '#876655'}, {'background-color': '#6689DD'}
+      ];
+
+    $scope.classColor = function(index)
+    {
+      return '{background-color: ' + $scope.colors[index] + ';';
+    }
     $scope.current = $scope.views[0];
     $scope.switchView = function(index)
     {

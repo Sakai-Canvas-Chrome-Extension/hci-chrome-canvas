@@ -11,6 +11,8 @@ article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,su
 .glyphicon-nonescaped.glyphicon-calendar:before { 
     content: "\d83d\dcc5";
 }
+.btn-custom{color:#fff;background-color:#FD3C01;border-color:#FD3C01}
+.btn-custom:hover,.btn-cusstom:focus,.btn-custom:active,.btn-custom.active,.open .dropdown-toggle.btn-custom{color:#fff;background-color:#ED3902;border-color:#ED3902}
 .bs-callout {
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -32,10 +34,10 @@ article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,su
     margin-top: -5px;
 }
 .bs-callout-default {
-    border-left-color: #777;
+    border-left-color: #FD3C01;;
 }
 .bs-callout-default h4 {
-    color: #777;
+    color: #FD3C01;;
 }
 .bs-callout-primary {
     border-left-color: #428bca;
