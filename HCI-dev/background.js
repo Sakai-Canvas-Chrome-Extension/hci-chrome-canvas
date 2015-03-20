@@ -6,15 +6,57 @@ var array ={};
 //classes 0 -> n
 var classes;
 //KEY == classes[i].id
-var assignments = [];
+var assignments = {};
 
 function convertToJSON(response){
     //converts the XMLHttpRequest to JSON object file and returns it
     var myObject = JSON.parse(response);
-    classes = myObject;
     return myObject;
 };
 
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+    if(array[tab.id]){
+        array[tab.id] = false;
+        chrome.tabs.executeScript(tab.id, {file: "uninject.js"});
+    }else{
+        array[tab.id] = true;
+        chrome.tabs.executeScript(tab.id, {file: "inject.js"});
+        fetchData();
+    }
+});
+
+// ******************************** WILL'S STORAGE STUFF ********************************
+
+/* ******************************** ROAD MAP ********************************
+
+1) Fetch course data from canvas api
+    - fectchData();
+2) Fetch assignment data based on course data from canvas api
+    - getAssignments();
+3) Update our local storage
+    - updateStorage();
+4) Put all assignments from storage in an array
+    - getAssignmentsFromStorage();
+
+*** time passes ***
+
+5) respond to front end messages with our array
+
+   ************************************************************************** */
+fetchData();
+function fetchData() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://canvas.instructure.com/api/v1/courses?access_token=1016~EnIw6S4NDs4swhTCNU7p7xsU4nyhjSuGDxMaDLKCYFx6RBe1RriCukfLY8f8zuU2", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            // innerText does not let the attacker inject HTML elements.
+                classes = convertToJSON(xhr.responseText);
+                getAssignments(classes);
+        }
+    }
+    xhr.send();
+}
 
 function getAssignments(classes){
     var xhr = [];
@@ -24,10 +66,13 @@ function getAssignments(classes){
             url = "https://canvas.instructure.com/api/v1/courses/"+ classes[i].id +"/assignments?access_token=1016~EnIw6S4NDs4swhTCNU7p7xsU4nyhjSuGDxMaDLKCYFx6RBe1RriCukfLY8f8zuU2";
             xhr[i].open("GET", url, true);
             xhr[i].onreadystatechange = function () {
-                if (xhr[i].readyState == 4 && xhr[i].status == 200) {
-                    assignments[classes[i].id] = convertToJSON(xhr[i].responseText);
-                    console.log(assignments[classes[i].id]);
-                    console.log(assignments);
+                if (xhr[i].readyState == 4) {
+                    if (xhr[i].status == 200) {
+                        assignments[classes[i].id] = convertToJSON(xhr[i].responseText);
+                    } else {
+                        assignments[classes[i].id] = [];
+                    }
+                    bridgeForStepTwo(classes.length);
                 }
             };
             xhr[i].send();
@@ -35,31 +80,101 @@ function getAssignments(classes){
     }
 };
 
-
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "https://canvas.instructure.com/api/v1/courses?access_token=1016~EnIw6S4NDs4swhTCNU7p7xsU4nyhjSuGDxMaDLKCYFx6RBe1RriCukfLY8f8zuU2", true);
-xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-        // innerText does not let the attacker inject HTML elements.
-            classes = convertToJSON(xhr.responseText);
-            getAssignments(classes);
-
+var class_count = 0;
+function bridgeForStepTwo(totalNumClasses) {
+    ++class_count;
+    if (class_count == totalNumClasses) {
+        class_count = 0;
+        getAssignmentIDsFromStorage();
     }
 }
-xhr.send();
 
+var full_assignment_id_list = [];
+function getAssignmentIDsFromStorage() {
+    chrome.storage.local.get('assignment_keys', function(response) {
+        full_assignment_id_list = response.assignment_keys;
+        mergeAssignmentIDs();
+    });
+}
 
-
-chrome.browserAction.onClicked.addListener(function(tab) {
-    if(array[tab.id]){
-        array[tab.id] = false;
-        console.log('background')
-        chrome.tabs.executeScript(tab.id, {file: "uninject.js"});
-    }else{
-        array[tab.id] = true;
-        console.log('background')
-        chrome.tabs.executeScript(tab.id, {file: "inject.js"});
+function mergeAssignmentIDs() {
+    for (var i = 0; i < classes.length; i++) {
+        var class_id = classes[i].id;
+        var assignment_set = assignments[class_id];
+        if (assignment_set) {
+            for (var j = 0; j < assignment_set.length; j++) {
+                if (full_assignment_id_list.indexOf(assignment_set[j].id) == -1)
+                    full_assignment_id_list.push(assignment_set[j].id);
+            }
+        }
     }
+    chrome.storage.local.set({'assignment_keys': full_assignment_id_list}, function () {
+        updateAssignmentList();
+    });
+}
 
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+    return true;
+}
 
+function updateAssignmentList() {
+    for (var i = 0; i < classes.length; i++) {
+        var class_id = classes[i].id;
+        var assignment_set = assignments[class_id];
+        if (assignment_set) {
+            for (var j = 0; j < assignment_set.length; j++) {
+                var ass = assignment_set[j];
+                (function (ass, i) {
+                    var ass_id = ass.id + '';
+                    chrome.storage.local.get(ass_id, function(record) {
+                        if (!isEmpty(record)) {
+                            bridgeForStepThree(i);
+                        } else {
+                            var obj = {};
+                            obj[ass_id] = ass;
+                            chrome.storage.local.set(obj, function () {
+                                bridgeForStepThree(i);
+                            });
+                        }
+                    });
+                })(ass, i);
+            }
+        }
+    }
+}
+
+var ass_counts = [0, 0];
+function bridgeForStepThree(class_num) {
+    ++ass_counts[class_num];
+    var allGood = true;
+    for (var i = 0; i < classes.length; i++) {
+        if (ass_counts[i] != assignments[classes[i].id].length) {
+            allGood = false;
+        }
+    }
+    if (allGood) {
+        getAssignmentsFromStorage();
+    }
+}
+
+var assignments_from_storage = [];
+function getAssignmentsFromStorage() {
+    for (var i = 0; i < full_assignment_id_list.length; i++) {
+        var ass_id = full_assignment_id_list[i] + '';
+        chrome.storage.local.get(ass_id, function (assignment) {
+            assignments_from_storage.push(assignment);
+        });
+    }
+}
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.method == "getAssignments") {
+        sendResponse({stuff: assignments_from_storage});
+    }
 });
+
+// ******************************** END WILL'S STORAGE STUFF ****************************

@@ -18,5 +18,8 @@ if (window.top === window) {
 
     scheduleScript.src = chrome.extension.getURL("popup.html");
 
-
+    // Call this to get the user's upcoming assignments.
+    chrome.runtime.sendMessage({method: "getAssignments"}, function(response) {
+        console.log(response.stuff);
+    });
 }
