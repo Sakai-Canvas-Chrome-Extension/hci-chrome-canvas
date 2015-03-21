@@ -1,4 +1,4 @@
-<section style="height: 100vh; background-color: #2D4C51;">
+<section style="height: 100vh;">
 		<div id="top-content" >
 			<div class="col-12 text-center" style="margin-top: 20px;" ng-controller="DatepickerCtrl">
 				<div style="display:inline-block; height: auto; margin: 0px">
@@ -39,19 +39,19 @@
 			-->
 			<div class="day-header col-12">
 		   		<h3 style="margin: 0px; padding-bottom: 0px">
-		      		<small>March 17, 2015 - <small>TUESDAY</small></small>
+		      		<small style="font-size: 12pt">March 17, 2015 - <small style="font-size: 11pt">TUESDAY</small></small>
 		   		</h3>
 		   	</div>
 			<div class="list-group col-12">
 				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[0]">COP3530</span></div>
 			  	<a class="list-group-item col-12"><!--popover-placement="top" popover="On the Top!" popover-append-to-body="true"-->
 			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Assignment 1<br><small>Status: Not started</small></h5>
+			  			<h5>Assignment 1<br><small>Status: Submitted</small></h5>
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
@@ -64,12 +64,12 @@
 				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[1]">CEN3031</span></div>
 			  	<a class="list-group-item col-12">
 			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Homework 1<br><small>Status: Submitted</small></h5>
+			  			<h5>Homework 1<br><small>Status: Not Started</small></h5>
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
@@ -82,18 +82,18 @@
 			  	<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[2]">COP3530</span></div>
 			  	<a class="list-group-item col-12">
 			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Assignment 2<br><small>Status: Not started</small></h5>
+			  			<h5>Assignment 2<br><small>Status: Closed</small></h5>
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
-						<button type="button" class="btn btn-default btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
+						<button type="button" class="btn btn-danger btn-xs pull-right" disabled="true">
+				  			<span class="glyphicon glyphicon-remove" ></span>
 						</button>
 					</div>
 			  	</a>
@@ -114,9 +114,9 @@
 			  			<h5>Asignment 3<br><small>Status: Not started</small></h5>
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
@@ -142,9 +142,9 @@
 
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
@@ -160,9 +160,9 @@
 			  			<h5>Homework 2<br><small>Status: Submitted</small></h5>
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
@@ -187,9 +187,9 @@
 
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
@@ -205,9 +205,9 @@
 			  			<h5>Homework 2<br><small>Status: Submitted</small></h5>
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
@@ -222,9 +222,9 @@
 			  			<h5>Homework 2<br><small>Status: Submitted</small></h5>
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
@@ -239,9 +239,9 @@
 			  			<h5>Homework 2<br><small>Status: Submitted</small></h5>
 			  		</div>
 			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 10px">Due: 11:55pm</span> 
+			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
 			  			<br> 
-			  			<span style="font-weight: bold; font-size: 10px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
+			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
 			  		</div>
 			  		<div class="col-2" style="padding: 0px">
 			  			<br>
