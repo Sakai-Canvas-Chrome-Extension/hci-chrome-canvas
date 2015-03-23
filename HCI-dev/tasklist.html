@@ -24,19 +24,33 @@
 			</div>
 		</div>
 		<section id="tasklist" ng-controller="MainController">
+				<div ng-repeat-start=" task in tasks | orderBy: 'due_at' | groupBy:'due_at'"class="day-header col-12" data-ng-if="task.CHANGED" style="margin-top: 20px">
+			   		<h3 style="margin: 0px; padding-bottom: 0px">
+			      		<small style="font-size: 12pt" >{{task.due_at | date: 'longDate'}} - <small style="font-size: 11pt">{{(task.due_at | date: 'EEEE').toUpperCase()}}</small></small>
+			   		</h3>
+			   	</div>
+					<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="supportedColors[courseColors[task.course]]">{{task.course}}</span></div>
+				  	<a class="list-group-item col-12" ng-repeat-end ng-class="{'singleTask': ($index-1 < tasks.length && tasks[$index+1].CHANGED || $index == tasks.length-1)}">
+				  		<div class="col-6" style="padding: 0px">
+				  			<h5> {{task.name}}<br><small>Status: {{task.status}}</small></h5>
+				  		</div>
+				  		<div class="col-4" style="padding: 0px">
+				  			<span style="font-weight: bold; font-size: 12px">Due: {{task.due_at | date: 'shortTime'}}</span> 
+				  			<br> 
+				  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" data-ng-init="rate=task.priority"></rating></span>
+				  		</div>
+				  		<div class="col-2" style="padding: 0px">
+				  			<br>
+							<button type="button" class="btn btn-xs pull-right" ng-class="{'btn-success': task.checked, 'btn-default': !task.checked}" ng-if="!checkPassed(task)" ng-click="task.checked = !task.checked">
+					  			<span class="glyphicon glyphicon-ok" ></span> 
+							</button>
+							<button type="button" class="btn btn-danger btn-xs pull-right" disabled="true" ng-if="checkPassed(task)">
+					  			<span class="glyphicon glyphicon-remove" ></span>
+							</button>
+						</div>
+				  	</a>
 
-
-			<!--	<div class="zero-clipboard"><span class="btn-clipboard">COP3530</span></div>
-			  	<a class="list-group-item col-12">
-			  		Homework 1
-			  		<span style="font-weight: bold; font-size: 10px">Due: 11:55pm | <span class="glyphicon glyphicon-star" ></span><span class="glyphicon glyphicon-star" ></span></span>
-
-			  		<button type="button" class="btn btn-success btn-xs pull-right" >
-			  			<span class="glyphicon glyphicon-ok" ></span>
-					</button>
-
-				</a>
-			-->
+<!--
 			<div class="day-header col-12">
 		   		<h3 style="margin: 0px; padding-bottom: 0px">
 		      		<small style="font-size: 12pt">March 17, 2015 - <small style="font-size: 11pt">TUESDAY</small></small>
@@ -44,7 +58,7 @@
 		   	</div>
 			<div class="list-group col-12">
 				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[0]">COP3530</span></div>
-			  	<a class="list-group-item col-12"><!--popover-placement="top" popover="On the Top!" popover-append-to-body="true"-->
+			  	<a class="list-group-item col-12">
 			  		<div class="col-6" style="padding: 0px">
 			  			<h5>Assignment 1<br><small>Status: Submitted</small></h5>
 			  		</div>
@@ -252,6 +266,6 @@
 			  	</a>
 			</div>
 
-			
+		-->	
 	</section>
 </section>
