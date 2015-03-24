@@ -22,11 +22,10 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     }else{
         array[tab.id] = true;
         chrome.tabs.executeScript(tab.id, {file: "inject.js"});
-        fetchData();
     }
 });
 
-// ******************************** WILL'S STORAGE STUFF ********************************
+// ******************************** CHECK FOR NEW ASSIGNMENTS ********************************
 
 /* ******************************** ROAD MAP ********************************
 
@@ -44,26 +43,34 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 5) respond to front end messages with our array
 
    ************************************************************************** */
-fetchData();
+var app_key = '1016~EnIw6S4NDs4swhTCNU7p7xsU4nyhjSuGDxMaDLKCYFx6RBe1RriCukfLY8f8zuU2'; //set by getAssignments message
+
 function fetchData() {
+    console.log('b');
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "https://canvas.instructure.com/api/v1/courses?access_token=1016~EnIw6S4NDs4swhTCNU7p7xsU4nyhjSuGDxMaDLKCYFx6RBe1RriCukfLY8f8zuU2", true);
+    xhr.open("GET", "https://canvas.instructure.com/api/v1/courses?access_token=" + app_key, true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
             // innerText does not let the attacker inject HTML elements.
                 classes = convertToJSON(xhr.responseText);
-                getAssignments(classes);
+                if(classes.errors != null) {
+                    assignments_callback({error: "Invalid API Key"});
+                } else {
+                    getAssignments(classes);
+                }
         }
     }
     xhr.send();
 }
 
 function getAssignments(classes){
+    console.log('c');
+    console.log(classes.length);
     var xhr = [];
     for (i = 0; i < classes.length; i++){
         (function (i){
             xhr[i] = new XMLHttpRequest();
-            url = "https://canvas.instructure.com/api/v1/courses/"+ classes[i].id +"/assignments?access_token=1016~EnIw6S4NDs4swhTCNU7p7xsU4nyhjSuGDxMaDLKCYFx6RBe1RriCukfLY8f8zuU2";
+            url = "https://canvas.instructure.com/api/v1/courses/"+ classes[i].id +"/assignments?access_token=" + app_key;
             xhr[i].open("GET", url, true);
             xhr[i].onreadystatechange = function () {
                 if (xhr[i].readyState == 4) {
@@ -91,6 +98,7 @@ function bridgeForStepTwo(totalNumClasses) {
 
 var full_assignment_id_list = [];
 function getAssignmentIDsFromStorage() {
+    console.log('d');
     chrome.storage.local.get('assignment_keys', function(response) {
         full_assignment_id_list = response.assignment_keys;
         mergeAssignmentIDs();
@@ -163,18 +171,68 @@ function bridgeForStepThree(class_num) {
 
 var assignments_from_storage = [];
 function getAssignmentsFromStorage() {
+    console.log("getting assignments from storage");
+    assignment_countdown = full_assignment_id_list.length;
     for (var i = 0; i < full_assignment_id_list.length; i++) {
         var ass_id = full_assignment_id_list[i] + '';
         chrome.storage.local.get(ass_id, function (assignment) {
             assignments_from_storage.push(assignment);
+            finalBridge();
         });
     }
 }
+var assignment_countdown = -1; // set by preceding function
+var assignments_callback = null; // set by message passer
+
+function finalBridge() {
+    console.log(assignment_countdown);
+    --assignment_countdown;
+    if(assignment_countdown == 0) {
+        if (assignments_callback) {
+            console.log(assignments_callback);
+            assignments_callback({stuff: assignments_from_storage, key: app_key});
+        }
+    }
+}
+
+//
+// TODO
+// 1) Save priority
+// 2) Save new tasks
+// 3) IRB
+// 4) 
+// ******************************** END CHECK FOR ASSIGNMENTS ****************************
+
+// ******************************** APP KEY STORAGE **************************************
+
+// ******************************** END APP KEY STORAGE **********************************
+
+// ******************************** MESSAGE PASSER **********************************
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log(request.method);
     if (request.method == "getAssignments") {
-        sendResponse({stuff: assignments_from_storage});
+        console.log('a');
+        if(request.key) {
+            app_key = request.key;
+        }
+        assignments_callback = sendResponse;
+        fetchData();
+        return true;
+    } else if (request.method == 'retrieveAppKey') {
+        (function(sendResponse) {
+            chrome.storage.local.get('app_key', function(key) {
+                var value = '';
+                if (!isEmpty(key)) {
+                    value = key;
+                }
+                console.log(key);
+                sendResponse({'app_key': value});
+            });
+        })(sendResponse);
+        return true; // indicates that I want to send a response asynchronously
+    } else if (request.method == 'storeAppKey') {
+        console.log(request.key);
+        chrome.storage.local.set({'app_key': request.key}); //callback unneccessary
     }
 });
-
-// ******************************** END WILL'S STORAGE STUFF ****************************

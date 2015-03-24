@@ -11,13 +11,12 @@
 		  		<h4>Step 3:</h4>
 		  		<p>Create a "New API Key" and copy your new token.
 			</div>
-		
 		<div class=" col-12 text-center" style="margin-bottom: 10px">
 				<form class="form-inline">
 				  <div class="form-group">
-				    <input class="form-control" placeholder="Paste API token here...">
+				    <input ng-model="user_obj.key_field" class="form-control" placeholder="Paste API token here...">
 				  </div>
-				  <button class="btn btn-success" ng-click="switchView(1)"><span class="glyphicon glyphicon-retweet"></span> Sync</button>
+				  <button class="btn btn-success" ng-click="checkAPIKey()"><span class="glyphicon glyphicon-retweet"></span> Sync</button>
 				</form>
 		</div>
 		<p>After syncing, view your assignments, add new tasks, and see "What's Next?" to work on.</p>
