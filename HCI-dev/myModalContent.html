@@ -1,22 +1,22 @@
-<div class="modal-body row" ng-controller="MainController" >
+<div class="modal-body row" ng-controller="MainController">
             <h2 class="text-center">New Task</h2>
-    <div class="col-12 ">
-        <strong style="color: #FD3C01;">Create a task. </strong>Add your own tasks to keep track of other assignments. Set a due date, title, etc.
+    <div class="col-12 " style="padding-bottom: 25px">
+        <strong style="color: #FD3C01;">Create a task. </strong>Add your own tasks to keep track of other assignments. Set a due date, description, priority, and more.
 
             <form>
                 <div class="form-group" ng-controller="DatepickerCtrl">
-                    <div class="form-group col-7" style="padding: 6px; margin-bottom: 0px">
+                    <div class="form-group col-7" style="padding: 6px">
                         <label for="exampleInputName2">Title:</label>
                         <input type="text" class="form-control" placeholder="Project Demo" maxLength="20">
                     </div>
                     <div class="col-12"></div>
-                    <div class="form-group col-5" style="padding: 6px; margin-bottom: 0px">
+                    <div class="form-group col-5" style="padding: 6px">
                         <label for="exampleInputName2">Class Code:</label>
                         <input type="text" class="form-control" placeholder="CEN4721c" maxLength="10">
                     </div>
                     <div class="col-12"></div>
 
-                    <div class="col-6" style="margin-top: 6px; padding: 6px 0px 0px 6px"><label>Date & Time Due: </label>
+                    <div class="col-6" style="margin-top: 6px; padding: 6px"><label>Date & Time Due: </label>
                         <p class="input-group">
                             <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
                             <span class="input-group-btn">
@@ -34,9 +34,13 @@
                 </div>
             </form>
             <div class="col-12 text-right">
-              <button class="btn btn-custom" ng-click="cancel()"> Cancel</button>
-              <button class="btn btn-success" ng-click="addTask()"> Create</button>
+              <button class="btn btn-custom" ng-click="close()"> Cancel</button>
+              <button class="btn btn-success" ng-click="addTask()"> Submit</button>
             <div>  
+        
+
     </div>
+    
+
   
 </div>
