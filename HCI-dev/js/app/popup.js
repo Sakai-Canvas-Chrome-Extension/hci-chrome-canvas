@@ -1,13 +1,13 @@
-﻿myApp.controller("MainController", function ($scope, $http, $location ,$anchorScroll) {
+﻿myApp.controller("MainController", function ($scope, $http) {
     //app views 
-    $scope.views = ['startpage.html', 'tasklist.html', 'newtask.html', 'whatsnext.html'];
-    
+    $scope.views = ['startpage.html', 'tasklist.html', 'newtask.html'];
     //function for switching views
     $scope.current = $scope.views[0];
     $scope.switchView = function(index)
     {
         $scope.current = $scope.views[index];
     };
+
    //supported class colors
     $scope.supportedColors = [
       {'background-color': '#555587'}, {'background-color': '#92213A'}, 
@@ -17,41 +17,18 @@
       {'background-color': '#876655'}, {'background-color': '#6689DD'}
       ];
     $scope.courseColors = [];
+ 
     $scope.checkPassed = function (task)
-    {   
-      if(new Date() > new Date(task.due_at))
-        {
-          task.passed = 'past';
-          if(!task.checked)
-          {
-            task.completed = 'missed'
-          }
-          else
-          {
-            task.completed = 'complete'
-          }
-        }
-        else
-        {
-          task.passed = 'future';
-          if(!task.checked)
-          {
-            task.completed = 'todo'
-          }
-          else
-          {
-            task.completed = 'complete'
-          }
-        }
+    {
+      if(task.checked)
+      {
+        return false;
+      }
+      else
+      {
         return new Date() > new Date(task.due_at);
+      }
     };
-
-    $scope.checkFuture = function (task) {
-        return new Date() < new Date(task.due_at);
-    }
-
-
-
     //TEST DATA -- START
     $scope.courseColors['Class1'] = 0;
     $scope.courseColors['Class2'] = 1;
@@ -66,6 +43,7 @@
         priority: 2,
         course: 'Class2',
         checked: true
+
       },
       {
         name: 'Assignment2',
@@ -113,7 +91,6 @@
 
       }
     ];
-    
   //TEST DATA -- END
 
 /*   
@@ -156,45 +133,9 @@
 
         }
     };
-
 });
 
-myApp.controller('ModalCtrl', function ($scope, $modal, $log) {
 
-  $scope.open = function (type) {
-    if(type==0)
-    {
-      view = 'newtask.html';
-    }
-    else
-    {
-      view = 'whatsnext.html';
-
-    }
-    var modalInstance = $modal.open({
-      templateUrl: view,
-      controller: 'ModalInstanceCtrl',
-    });
-
-    modalInstance.result.then(function (selectedItem) {
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
-});
-
-// Please note that $modalInstance represents a modal window (instance) dependency.
-// It is not the same as the $modal service used above.
-myApp.controller('ModalInstanceCtrl', function ($scope, $modalInstance) {
-
-  $scope.ok = function () {
-    $modalInstance.close($scope.selected.item);
-  };
-
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
-});
 
 //StackOverflow Resource; edited to work with dates only
 myApp.filter('groupBy', function(){
@@ -215,6 +156,7 @@ myApp.filter('groupBy', function(){
       // if not the first item
             if (prev_item !== null){ 
         // check if the group by field changed
+                console.log(new Date(prev_item[group_by]).toLocaleDateString());
                 if (new Date(prev_item[group_by]).toLocaleDateString() !== new Date(item[group_by]).toLocaleDateString()) {
           group_changed = true;
         }
@@ -301,6 +243,11 @@ myApp.controller("TimepickerCtrl", function ($scope) {
         d.setMinutes( 0 );
         $scope.mytime = d;
     };
+
+
+  $scope.changed = function () {
+    $log.log('Time changed to: ' + $scope.mytime);
+  };
 
   $scope.clear = function() {
     $scope.mytime = null;
