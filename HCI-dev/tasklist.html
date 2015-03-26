@@ -2,31 +2,42 @@
 		<div id="top-content" >
 			<div class="col-12 text-center" style="margin-top: 20px;" ng-controller="DatepickerCtrl">
 				<div style="display:inline-block; height: auto; margin: 0px">
-			        <datepicker ng-model="dt" min-date="minDate" show-weeks="true" class="well well-sm" style="margin-bottom: 0px"></datepicker>
+			        <datepicker ng-model="dt" min-date="minDate" show-weeks="true" class="well well-sm" style="margin-bottom: 0px" due-dates="tasks"> </datepicker>
 			    </div>
 			</div>
 			<div class=" col-12" style="margin: 10px 0px">
 					<div class=" col-5" style="padding: 0 5px">
-				      	<select class="form-control" id="test">
-						  <option>All</option>
-						  <option>CEN3031</option>
-						  <option>CEN4701c</option>
-						  <option>COP3530</option>
+				      	<select class="form-control" ng-model="codes">
+						  <option value="">All</option>
+						  <option disabled>———————</option>
+						  <option value="Class1">Class1</option>
+						  <option value="Class2">Class2</option>
+						  <option value="Class3">Class3</option>
+						  <option disabled>———————</option>
+						  <option value="missed">Missed Tasks</option>
+						  <option value="complete">Finished Tasks</option>
+						  <option value="todo">Unfinished Tasks</option>
+						  <option disabled>———————</option>
+						  <option value="past">Past Tasks</option>
+						  <option value="future">Upcoming Task</option>
+
 						</select>
 					</div>
-			  		<button type="button" class="btn btn-custom" ng-click="switchView(2)">
+			  		<button type="button" class="btn btn-custom" ng-controller="ModalCtrl" ng-click="open(0)">
 			  			<span class="glyphicon glyphicon-plus" ></span> New task
 					</button>
 
-					<button type="button" class="btn btn-custom">
+					<button type="button" ng-controller="ModalCtrl" ng-click="open(1)" class="btn btn-custom">
 			  			</span> What's next?
 					</button>
 			</div>
 		</div>
 		<section id="tasklist" ng-controller="MainController">
-				<div ng-repeat-start=" task in tasks | orderBy: 'due_at' | groupBy:'due_at'"class="day-header col-12" data-ng-if="task.CHANGED" style="margin-top: 20px">
+				<div ng-repeat-start=" task in tasks | orderBy: 'due_at' | groupBy:'due_at' | filter:codes"class="day-header col-12" data-ng-if="task.CHANGED" style="margin-top: 20px">
 			   		<h3 style="margin: 0px; padding-bottom: 0px">
-			      		<small style="font-size: 12pt" >{{task.due_at | date: 'longDate'}} - <small style="font-size: 11pt">{{(task.due_at | date: 'EEEE').toUpperCase()}}</small></small>
+			   			<a id="{{task.due_at | date:'yyyy-MM-dd' }}">
+			      			<small style="font-size: 12pt" >{{task.due_at | date: 'longDate'}} - <small style="font-size: 11pt">{{(task.due_at | date: 'EEEE').toUpperCase()}}</small></small>
+			      		</a>
 			   		</h3>
 			   	</div>
 					<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="supportedColors[courseColors[task.course]]">{{task.course}}</span></div>
@@ -41,231 +52,17 @@
 				  		</div>
 				  		<div class="col-2" style="padding: 0px">
 				  			<br>
-							<button type="button" class="btn btn-xs pull-right" ng-class="{'btn-success': task.checked, 'btn-default': !task.checked}" ng-if="!checkPassed(task)" ng-click="task.checked = !task.checked">
-					  			<span class="glyphicon glyphicon-ok" ></span> 
+							<button type="button" class="btn btn-xs pull-right" ng-class="{'btn-success': task.checked, 'btn-default': !task.checked}" ng-if="!checkPassed(task) || checkPassed(task)&&task.checked" ng-click="task.checked = !task.checked" ng-disabled="checkPassed(task)">
+					  			<span class="glyphicon glyphicon-ok" ></span>
 							</button>
-							<button type="button" class="btn btn-danger btn-xs pull-right" disabled="true" ng-if="checkPassed(task)">
+							<button type="button" class="btn btn-danger btn-xs pull-right" disabled="true" ng-if="checkPassed(task) && !task.checked">
 					  			<span class="glyphicon glyphicon-remove" ></span>
 							</button>
 						</div>
 				  	</a>
-
-<!--
-			<div class="day-header col-12">
-		   		<h3 style="margin: 0px; padding-bottom: 0px">
-		      		<small style="font-size: 12pt">March 17, 2015 - <small style="font-size: 11pt">TUESDAY</small></small>
-		   		</h3>
-		   	</div>
-			<div class="list-group col-12">
-				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[0]">COP3530</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Assignment 1<br><small>Status: Submitted</small></h5>
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-success btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-
-				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[1]">CEN3031</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Homework 1<br><small>Status: Not Started</small></h5>
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-default btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-
-			  	<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[2]">COP3530</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Assignment 2<br><small>Status: Closed</small></h5>
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-danger btn-xs pull-right" disabled="true">
-				  			<span class="glyphicon glyphicon-remove" ></span>
-						</button>
-					</div>
-			  	</a>
-			</div>
-
-
-
-
-			<div class="day-header col-12">
-		   		<h3 style="margin: 0px; padding-bottom: 0px">
-		      		<small>March 18, 2015 - <small>WEDNESDAY</small></small>
-		   		</h3>
-		   	</div>
-			<div class="list-group col-12">
-				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[3]">COP3530</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Asignment 3<br><small>Status: Not started</small></h5>
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-default btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-			</div>
-
-
-
-			<div class="day-header col-12">
-		   		<h3 style="margin: 0px; padding-bottom: 0px">
-		      		<small>March 22, 2015 - <small>SUNDAY</small></small>
-		   		</h3>
-		   	</div>
-			<div class="list-group col-12">
-				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[4]">COP3530</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Quiz 4<br><small>Status: Submitted</small></h5>
-
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-success btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-
-				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[5]">CEN3031</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Homework 2<br><small>Status: Submitted</small></h5>
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-success btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-			</div>
-
-
-			<div class="day-header col-12">
-		   		<h3 style="margin: 0px; padding-bottom: 0px">
-		      		<small>March 22, 2015 - <small>SUNDAY</small></small>
-		   		</h3>
-		   	</div>
-			<div class="list-group col-12">
-				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[6]">COP3530</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Quiz 4<br><small>Status: Submitted</small></h5>
-
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-success btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-
-				<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[7]">CEN3031</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Homework 2<br><small>Status: Submitted</small></h5>
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-success btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-			  	<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[8]">CEN3031</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Homework 2<br><small>Status: Submitted</small></h5>
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-success btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-			  	<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="classColors[9]">CEN3031</span></div>
-			  	<a class="list-group-item col-12">
-			  		<div class="col-6" style="padding: 0px">
-			  			<h5>Homework 2<br><small>Status: Submitted</small></h5>
-			  		</div>
-			  		<div class="col-4" style="padding: 0px">
-			  			<span style="font-weight: bold; font-size: 12px">Due: 11:55pm</span> 
-			  			<br> 
-			  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating></span>
-			  		</div>
-			  		<div class="col-2" style="padding: 0px">
-			  			<br>
-						<button type="button" class="btn btn-success btn-xs pull-right">
-				  			<span class="glyphicon glyphicon-ok" ></span>
-						</button>
-					</div>
-			  	</a>
-			</div>
-
-		-->	
 	</section>
 </section>
+<!--
+<div collapse="isCollapsed" style="position: absolute; bottom: 0px; margin: 0 2%; width: 98%; z-index: 9999999999999">
+		<div data-ng-include="views[2]"></div> 
+</div>-->
