@@ -14,6 +14,13 @@ function convertToJSON(response){
     return myObject;
 };
 
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+    return true;
+}
 
 chrome.browserAction.onClicked.addListener(function(tab) {
     if(array[tab.id]){
@@ -60,7 +67,12 @@ function fetchData() {
                 }
         }
     }
-    xhr.send();
+    // DEBUG
+    chrome.storage.local.clear(function() { // clears all stored data
+        xhr.send();
+    });
+    // LIVE
+    // xhr.send();
 }
 
 function getAssignments(classes){
@@ -100,7 +112,7 @@ var full_assignment_id_list = [];
 function getAssignmentIDsFromStorage() {
     console.log('d');
     chrome.storage.local.get('assignment_keys', function(response) {
-        full_assignment_id_list = response.assignment_keys;
+        full_assignment_id_list = isEmpty(response) ? [] : response.assignment_keys;
         mergeAssignmentIDs();
     });
 }
@@ -117,54 +129,66 @@ function mergeAssignmentIDs() {
         }
     }
     chrome.storage.local.set({'assignment_keys': full_assignment_id_list}, function () {
-        updateAssignmentList();
+        conformAssignmentFields();
     });
 }
 
-function isEmpty(obj) {
-    for(var prop in obj) {
-        if(obj.hasOwnProperty(prop))
-            return false;
-    }
-    return true;
-}
-
-function updateAssignmentList() {
+var conformed_assignments = [];
+function conformAssignmentFields() {
     for (var i = 0; i < classes.length; i++) {
         var class_id = classes[i].id;
         var assignment_set = assignments[class_id];
         if (assignment_set) {
             for (var j = 0; j < assignment_set.length; j++) {
                 var ass = assignment_set[j];
-                (function (ass, i) {
-                    var ass_id = ass.id + '';
-                    chrome.storage.local.get(ass_id, function(record) {
-                        if (!isEmpty(record)) {
-                            bridgeForStepThree(i);
-                        } else {
-                            var obj = {};
-                            obj[ass_id] = ass;
-                            chrome.storage.local.set(obj, function () {
-                                bridgeForStepThree(i);
-                            });
-                        }
-                    });
-                })(ass, i);
+                var conformed_assignment = {};
+                conformed_assignment.CHANGED = false;
+                conformed_assignment.checked = false;
+                conformed_assignment.completed = 
+                    ass.has_submitted_submissions ?
+                        "complete" : (ass.locked_for_user ? "missed" : "todo");
+                conformed_assignment.course = classes[i].course_code;
+                conformed_assignment.due_at = ass.due_at;
+                conformed_assignment.id = ass.id;
+                conformed_assignment.name = ass.name;
+                conformed_assignment.passed = 
+                    ass.locked_for_user ? "past" : "future";
+                conformed_assignment.priority = 2;
+                conformed_assignment.status = "Not Started";
+                conformed_assignments.push(conformed_assignment);
             }
         }
     }
+    updateAssignmentList();
 }
 
-var ass_counts = [0, 0];
-function bridgeForStepThree(class_num) {
-    ++ass_counts[class_num];
-    var allGood = true;
-    for (var i = 0; i < classes.length; i++) {
-        if (ass_counts[i] != assignments[classes[i].id].length) {
-            allGood = false;
-        }
+function updateAssignmentList() {
+    console.log('e');
+    for (var i = 0; i < conformed_assignments.length; i++) {
+        var ass = conformed_assignments[i];
+        (function (ass, i) {
+            var ass_id = ass.id + '';
+            chrome.storage.local.get(ass_id, function(record) {
+                if (!isEmpty(record)) {
+                    bridgeForStepThree(i);
+                } else {
+                    var obj = {};
+                    obj[ass_id] = ass;
+                    chrome.storage.local.set(obj, function () {
+                        bridgeForStepThree(i);
+                    });
+                }
+            });
+        })(ass, i);
     }
-    if (allGood) {
+}
+
+var ass_count = 0;
+function bridgeForStepThree(class_num) {
+    ++ass_count;
+    console.log(ass_count + " " + conformed_assignments.length);
+    if (ass_count == conformed_assignments.length) {
+        ass_count = 0;
         getAssignmentsFromStorage();
     }
 }
@@ -187,7 +211,7 @@ var assignments_callback = null; // set by message passer
 function finalBridge() {
     console.log(assignment_countdown);
     --assignment_countdown;
-    if(assignment_countdown == 0) {
+    if (assignment_countdown == 0) {
         if (assignments_callback) {
             console.log(assignments_callback);
             assignments_callback({stuff: assignments_from_storage, key: app_key});

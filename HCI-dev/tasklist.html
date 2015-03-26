@@ -19,7 +19,7 @@
 						  <option value="todo">Unfinished Tasks</option>
 						  <option disabled>———————</option>
 						  <option value="past">Past Tasks</option>
-						  <option value="future">Upcoming Task</option>
+						  <option value="future">Upcoming Tasks</option>
 
 						</select>
 					</div>
@@ -48,7 +48,7 @@
 				  		<div class="col-4" style="padding: 0px">
 				  			<span style="font-weight: bold; font-size: 12px">Due: {{task.due_at | date: 'shortTime'}}</span> 
 				  			<br> 
-				  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" data-ng-init="rate=task.priority"></rating></span>
+				  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" ng-click="saveRating(task)" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" data-ng-init="rate=task.priority"></rating></span>
 				  		</div>
 				  		<div class="col-2" style="padding: 0px">
 				  			<br>

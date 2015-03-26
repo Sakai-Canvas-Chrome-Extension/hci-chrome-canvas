@@ -131,7 +131,6 @@
     {
         chrome.runtime.sendMessage({method: "retrieveAppKey"}, function(response) {
           if (response.app_key != '') {
-            console.log('saved');
             $scope.initializeWith(response.app_key);
           }
         });
@@ -147,7 +146,7 @@
         var save_obj = {};
         save_obj.method = "storeAppKey";
         save_obj.key = response.key;
-        console.log(save_obj.key);
+        // console.log(save_obj.key);
         chrome.runtime.sendMessage(save_obj);
 
         $scope.switchView(1);
@@ -338,6 +337,10 @@ myApp.controller("RatingCtrl", function ($scope) {
     $scope.overStar = value;
     $scope.percent = 100 * (value / $scope.max);
   };
+  $scope.saveRating = function(task) {
+    console.log(task);
+    console.log("I should save (TODO) " + $scope.overStar);
+  }
 
   $scope.ratingStates = [
     {stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle'},
