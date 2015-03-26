@@ -127,10 +127,43 @@
         });
     }();
 */
-    $scope.initialize = function()
+     $scope.initialize = function()
     {
-  //    if(/*api key not saved*/)
-        {
+        chrome.runtime.sendMessage({method: "retrieveAppKey"}, function(response) {
+          if (response.app_key != '') {
+            console.log('saved');
+            $scope.initializeWith(response.app_key);
+          }
+        });
+    };
+    $scope.user_obj = {};
+    $scope.checkAPIKey = function() {
+      chrome.runtime.sendMessage({method: "getAssignments", key: $scope.user_obj.key_field}, function(response) {
+        if (response.error) {
+          console.log(response.error);
+          return;
+        }
+        // key is good! save it.
+        var save_obj = {};
+        save_obj.method = "storeAppKey";
+        save_obj.key = response.key;
+        console.log(save_obj.key);
+        chrome.runtime.sendMessage(save_obj);
+
+        $scope.switchView(1);
+        $scope.tasks = response.stuff;
+        console.log($scope.tasks);
+          //pull data from canvas and run update on files
+          /*
+            $scope.tasks = //read from files 
+            $scope.courseColors = //read from file
+          */ 
+      });
+    }
+    $scope.initializeWith = function(app_key) { //app_key could be empty string
+      console.log($scope.switchView);
+        $scope.switchView(1);
+        console.log($scope.current);
           //pull data and save to file
           /*
             var courses = //get array of course name Strings
@@ -144,19 +177,7 @@
             }
             //save $scope.courseColors to file
           */
-        }
-  //      else if(/*api key saved*/)
-        {
-          //pull data from canvas and run update on files
-          /*
-            $scope.tasks = //read from files 
-            $scope.courseColors = //read from file
-          */ 
-
-
-        }
-    };
-
+    }
 });
 
 myApp.controller('ModalCtrl', function ($scope, $modal, $log) {
