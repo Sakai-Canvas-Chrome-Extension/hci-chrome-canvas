@@ -279,7 +279,10 @@
         $scope.newTask.due_at.setHours($scope.grabTime.due_atTime.getHours());
         $scope.newTask.due_at.setMinutes($scope.grabTime.due_atTime.getMinutes());        
         console.log($scope.newTask);
-        $scope.newTask = {};
+        $scope.newTask = 
+        {
+          priority: 2
+        };
       }
 
     };
