@@ -40,7 +40,7 @@
 			      		</a>
 			   		</h3>
 			   	</div>
-					<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="supportedColors[courseColors[task.course]]">{{task.course}}</span></div>
+					<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="supportedColors[courseList.indexOf(task.course_code)]">{{task.course_code}}</span></div>
 				  	<a class="list-group-item col-12" ng-repeat-end ng-class="{'singleTask': ($index-1 < tasks.length && tasks[$index+1].CHANGED || $index == tasks.length-1)}">
 				  		<div class="col-6" style="padding: 0px">
 				  			<h5> {{task.name}}<br><small>Status: {{task.status}}</small></h5>
