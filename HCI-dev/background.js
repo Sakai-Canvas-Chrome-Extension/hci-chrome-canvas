@@ -147,7 +147,7 @@ function conformAssignmentFields() {
                 conformed_assignment.completed = 
                     ass.has_submitted_submissions ?
                         "complete" : (ass.locked_for_user ? "missed" : "todo");
-                conformed_assignment.course = classes[i].course_code;
+                conformed_assignment.course_code = classes[i].course_code;
                 conformed_assignment.due_at = ass.due_at;
                 conformed_assignment.id = ass.id;
                 conformed_assignment.name = ass.name;
