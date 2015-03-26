@@ -1,4 +1,6 @@
 ﻿myApp.controller("MainController", function ($scope, $http, $location ,$anchorScroll) {
+    /*--Panel Setup--START */ 
+
     //app views 
     $scope.views = ['startpage.html', 'tasklist.html', 'newtask.html', 'whatsnext.html'];
     
@@ -16,7 +18,7 @@
       {'background-color': '#435555'}, {'background-color': '#166621'}, 
       {'background-color': '#876655'}, {'background-color': '#6689DD'}
       ];
-    $scope.courseColors = [];
+    //Class code color index mapping
     $scope.checkPassed = function (task)
     {   
       if(new Date() > new Date(task.due_at))
@@ -48,15 +50,12 @@
 
     $scope.checkFuture = function (task) {
         return new Date() < new Date(task.due_at);
-    }
+    };
 
 
 
     //TEST DATA -- START
-    $scope.courseColors['Class1'] = 0;
-    $scope.courseColors['Class2'] = 1;
-    $scope.courseColors['Class3'] = 2;
-    $scope.courseColors['Class4'] = 3;
+    $scope.courseList = ['Class1', 'Class2', 'Class3', 'Class4'];
     $scope.tasks =
     [
       {
@@ -64,7 +63,7 @@
         status: 'Not Started',
         due_at: '2015-06-01T22:59:00-06:00',
         priority: 2,
-        course: 'Class2',
+        course_code: 'Class2',
         checked: true
       },
       {
@@ -72,7 +71,7 @@
         status: 'Not Started',
         due_at: '2015-03-01T23:19:00-06:00',
         priority: 1,
-        course: 'Class2',
+        course_code: 'Class2',
         checked: false
 
       },
@@ -81,7 +80,7 @@
         status: 'Not Started',
         due_at: '2015-02-08T13:59:00-06:00',
         priority: 4,
-        course: 'Class3',
+        course_code: 'Class3',
         checked: true
 
       },
@@ -90,7 +89,7 @@
         status: 'Not Started',
         due_at: '2015-04-01T23:59:00-06:00',
         priority: 2,
-        course: 'Class1',
+        course_code: 'Class1',
         checked: true
 
       },
@@ -99,7 +98,7 @@
         status: 'Not Started',
         due_at: '2015-03-01T23:59:00-06:00',
         priority: 2,
-        course: 'Class4',
+        course_code: 'Class4',
         checked: false
 
       },
@@ -108,7 +107,7 @@
         status: 'Not Started',
         due_at: '2015-03-27T23:59:00-06:00',
         priority: 4,
-        course: 'Class1',
+        course_code: 'Class1',
         checked: false
 
       }
@@ -116,7 +115,8 @@
     
   //TEST DATA -- END
 
-/*   
+
+/*  
   $scope.test = function()
     {
   //access_token=1016~5fvrhszhwpNo1TtjvbgJ0sJUSnnwDhLV4PIlp3t1QEU1liyprCXOXvN9Bo2UqtIF
@@ -127,6 +127,43 @@
         });
     }();
 */
+  /*--Panel Setup--END */
+
+  /*--Panel Data Linking Setup--START */ 
+
+    //Pull class codes from task list and fill courseList for color mapping
+    $scope. pullClasses = function()
+    {
+/*
+      $scope.canvasCourses = [];//pull canvas courses in order to match id with course_code
+      var getCourseCode = function(task)
+      {
+        for(var i = 0; i<canvasCourse.length; i++)
+        { if(canvasCourses[i].id = task.course_id)
+          {
+              return canvasCourses[i].course_code;
+          }
+        }
+
+      };
+*/
+      for(task in $scope.tasks)
+      {
+        $scope.courseList.push(task.course_code);
+      }
+
+    };
+
+
+    //Priority Changes
+
+    //Checked State Changes
+
+
+  /*--Panel Data Linking Setup --END*/ 
+
+  /*--Pull, save, retrieve, and update data--START */
+
      $scope.initialize = function()
     {
         chrome.runtime.sendMessage({method: "retrieveAppKey"}, function(response) {
@@ -177,7 +214,76 @@
             //save $scope.courseColors to file
           */
     }
+
+    //New Task Creation
+    $scope.newTask = {}
+    $scope.newTask.priority = 2;
+    $scope.validTitle = true;
+    $scope.validClassCode = true;
+    $scope.validDateTime = true;
+        //Properties and functions for time picker
+          $scope.grabTime = {};
+          $scope.grabTime.due_atTime = new Date();
+          $scope.hstep = 1;
+          $scope.mstep = 15;
+
+          $scope.options = {
+              hstep: [1, 2, 3],
+              mstep: [1, 5, 10, 15, 25, 30]
+          };
+
+          $scope.ismeridian = true;
+          $scope.toggleMode = function() {
+              $scope.ismeridian = ! $scope.ismeridian;
+          };
+
+    $scope.createNewTask = function()
+    {
+      console.log($scope.newTask);
+      $scope.validTitle = true;
+      $scope.validClassCode = true;
+      $scope.validDateTime = true;
+      $scope.error = '';
+
+      if($scope.newTask.name==undefined || $scope.newTask.name=='' )
+      {
+        $scope.validTitle = false;
+
+        $scope.error += '\"Title\" is required.';
+      }
+      if($scope.newTask.course_code==undefined || $scope.newTask.course_code=='')
+      {
+        $scope.validClassCode = false;
+        $scope.error += '\"Class Code\" is required.';
+      }
+      if($scope.newTask.due_at ==undefined)
+      {
+        $scope.validDateTime = false;
+        $scope.error += '\"Date & Time Due\" is required.';
+      }
+      if($scope.error=='')
+      {
+        //save to file
+        $scope.newTask.due_at.setHours($scope.grabTime.due_atTime.getHours());
+        $scope.newTask.due_at.setMinutes($scope.grabTime.due_atTime.getMinutes());        
+        console.log($scope.newTask);
+        $scope.newTask = {};
+      }
+
+    };
+
+    /*--Pull, save, retrieve, and update data--END */ 
+
 });
+
+
+
+
+
+
+
+
+/*--Helper Controllers & Filters--*/
 
 myApp.controller('ModalCtrl', function ($scope, $modal, $log) {
 
@@ -274,7 +380,7 @@ myApp.controller("DatepickerCtrl", function ($scope, $http) {
 
       // Disable weekend selection
       $scope.disabled = function(date, mode) {
-        return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+        return false;
       };
 
       $scope.toggleMin = function() {
@@ -296,36 +402,6 @@ myApp.controller("DatepickerCtrl", function ($scope, $http) {
 
       $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
       $scope.format = $scope.formats[0];
-});
-
-myApp.controller("TimepickerCtrl", function ($scope) {
-
-    $scope.mytime = new Date();
-
-    $scope.hstep = 1;
-    $scope.mstep = 15;
-
-    $scope.options = {
-        hstep: [1, 2, 3],
-        mstep: [1, 5, 10, 15, 25, 30]
-    };
-
-    $scope.ismeridian = true;
-    $scope.toggleMode = function() {
-        $scope.ismeridian = ! $scope.ismeridian;
-    };
-
-    $scope.update = function() {
-        var d = new Date();
-        d.setHours( 14 );
-        d.setMinutes( 0 );
-        $scope.mytime = d;
-    };
-
-  $scope.clear = function() {
-    $scope.mytime = null;
-  };
-
 });
 
 myApp.controller("RatingCtrl", function ($scope) {

@@ -830,7 +830,6 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
 $scope.gotoAnchor = function(date) {
         var dateObject = new Date(date);
         var newHash = dateObject.getFullYear() + '-' + (dateObject.getMonth()+1 < 10 ? '0' + (dateObject.getMonth()+1) : dateObject.getMonth()+1)  + '-' + (dateObject.getDate() < 10 ? '0' + dateObject.getDate() : dateObject.getDate()) ;
-        console.log(newHash);
         if ($location.hash() !== newHash) {
           // set the $location.hash to `newHash` and
           // $anchorScroll will automatically scroll to it

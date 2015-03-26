@@ -4,38 +4,46 @@
         <strong style="color: #FD3C01;">Create a task. </strong>Add your own tasks to keep track of other assignments. Set a due date, title, etc.
 
             <form>
+                <div data-ng-show="error" class="col-12 text-center text-danger">
+                    <strong data-ng-bind="error"></strong>
+                </div>
                 <div class="form-group" ng-controller="DatepickerCtrl">
-                    <div class="form-group col-7" style="padding: 6px; margin-bottom: 0px">
-                        <label for="exampleInputName2">Title:</label>
-                        <input type="text" class="form-control" placeholder="Project Demo" maxLength="20">
+                    <div class="form-group col-7" ng-class="{'has-error': !validTitle}" style="padding: 6px; margin-bottom: 0px">
+                        <label for="exampleInputName2"><span class="glyphicon glyphicon-asterisk" style="font-size: 11px; color: red"></span>Title:</label>
+                        <input type="text" class="form-control" placeholder="e.g. Project Demo" maxLength="20" ng-model="newTask.name">
                     </div>
                     <div class="col-12"></div>
-                    <div class="form-group col-5" style="padding: 6px; margin-bottom: 0px">
-                        <label for="exampleInputName2">Class Code:</label>
-                        <input type="text" class="form-control" placeholder="CEN4721c" maxLength="10">
+                    <div class="form-group col-5" ng-class="{'has-error': !validClassCode}" style="padding: 6px; margin-bottom: 0px">
+                        <label><span class="glyphicon glyphicon-asterisk" style="font-size: 11px; color: red"></span>Class Code:</label>
+                        <input type="text" class="form-control" placeholder="e.g. CEN4721c" maxLength="10" ng-model="newTask.course_code">
                     </div>
                     <div class="col-12"></div>
 
-                    <div class="col-6" style="margin-top: 6px; padding: 6px 0px 0px 6px"><label>Date & Time Due: </label>
+                    <div class="form-group col-6" ng-class="{'has-error': !validDateTime}" style="margin-top: 6px; padding: 6px 0px 0px 6px">
+                        <label><span class="glyphicon glyphicon-asterisk" style="font-size: 11px; color: red"></span>Date & Time Due: </label>
                         <p class="input-group">
-                            <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                            <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="newTask.due_at" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="open($event)"><span class="glyphicon glyphicon-calendar  glyphicon-nonescaped"></span></button>
                             </span>
                         </p>
                     </div>
                     <div class="form-group col-6" style="margin-bottom: 0px">
-                    <timepicker ng-controller="TimepickerCtrl" ng-model="mytime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+                    <timepicker  ng-model="grabTime.due_atTime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
                     </div>
                     <div class="col-12" ng-controller="RatingCtrl" style="padding-left: 5px; padding-bottom: 0px">
                         <label>Priority: </label>
-                        <p><rating ng-model="rate" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+                        <p><rating ng-model="newTask.priority" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+                    </div>
+                    <div class="col-12" style="padding-left: 6px; margin-bottom: 15px">
+                        <label>Description: </label>
+                        <textarea class="form-control" rows="2" ng-model="newTask.description"placeholder="[Optional] Enter a short description..."></textarea>
                     </div>
                 </div>
             </form>
             <div class="col-12 text-right">
               <button class="btn btn-custom" ng-click="cancel()"> Cancel</button>
-              <button class="btn btn-success" ng-click="addTask()"> Create</button>
+              <button class="btn btn-success" ng-click="createNewTask()"> Create</button>
             <div>  
     </div>
   
