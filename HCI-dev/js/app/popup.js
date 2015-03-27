@@ -1,6 +1,5 @@
 ﻿myApp.controller("MainController", function ($scope, $http, $location ,$anchorScroll) {
     /*--Panel Setup--START */ 
-
     //app views 
     $scope.views = ['startpage.html', 'tasklist.html', 'newtask.html', 'whatsnext.html'];
     
@@ -198,6 +197,7 @@
           console.log('bb');
           if (response.error) {
             console.log(response.error);
+            $scope.startpageError=response.error;
             return;
           }
           console.log($scope);
@@ -213,7 +213,7 @@
 
           $scope.switchView(1);
           $scope.tasks = reformatTasks(response.stuff);
-          // $scope.pullClasses();
+          $scope.pullClasses();
 
           $scope.$apply();
           console.log($scope.tasks);
@@ -232,6 +232,7 @@
           chrome.runtime.sendMessage({method: "getAssignments"}, function(response) {
             console.log('Response: '); console.log(response);
             $scope.tasks = reformatTasks(response.stuff);
+            $scope.pullClasses();
             $scope.switchView(1);
             $scope.$apply();
           });
@@ -319,7 +320,12 @@
       }
 
     };
-
+    $scope.saveChecked = function(task) {
+        var save_obj = {};
+        save_obj['method'] = 'modifyAssignment';
+        save_obj['ass'] = task;
+        chrome.runtime.sendMessage(save_obj);
+    };
     /*--Pull, save, retrieve, and update data--END */ 
 
 });

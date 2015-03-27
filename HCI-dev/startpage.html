@@ -18,6 +18,9 @@
 				  </div>
 				  <button class="btn btn-success" ng-click="checkAPIKey()"><span class="glyphicon glyphicon-retweet"></span> Sync</button>
 				</form>
+				<div data-ng-show="error" class="col-12 text-center text-danger" style="margin-top: 10px">
+                    <strong data-ng-bind="startpageError"></strong>
+                </div>
 		</div>
 		<p>After syncing, view your assignments, add new tasks, and see "What's Next?" to work on.</p>
 	</div>

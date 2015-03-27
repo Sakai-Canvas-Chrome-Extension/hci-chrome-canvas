@@ -50,7 +50,7 @@
 				  		</div>
 				  		<div class="col-2" style="padding: 0px">
 				  			<br>
-							<button type="button" class="btn btn-xs pull-right" ng-class="{'btn-success': task.checked, 'btn-default': !task.checked}" ng-if="!checkPassed(task) || checkPassed(task)&&task.checked" ng-click="task.checked = !task.checked" ng-disabled="checkPassed(task)">
+							<button type="button" class="btn btn-xs pull-right" ng-class="{'btn-success': task.checked, 'btn-default': !task.checked}" ng-if="!checkPassed(task) || checkPassed(task)&&task.checked" ng-click="task.checked = !task.checked; saveChecked(task)" ng-disabled="checkPassed(task)">
 					  			<span class="glyphicon glyphicon-ok" ></span>
 							</button>
 							<button type="button" class="btn btn-danger btn-xs pull-right" disabled="true" ng-if="checkPassed(task) && !task.checked">
