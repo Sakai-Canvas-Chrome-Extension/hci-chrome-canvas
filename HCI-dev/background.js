@@ -3,6 +3,13 @@
  */
 var array ={};
 
+
+// var firstTime = true;
+// if (firstTime) {
+//     chrome.storage.local.clear();
+//     firstTime = false;
+// }
+
 //classes 0 -> n
 var classes;
 //KEY == classes[i].id
@@ -67,11 +74,6 @@ function fetchData() {
                 }
         }
     }
-    // DEBUG
-    // chrome.storage.local.clear(function() { // clears all stored data
-    //     xhr.send();
-    // });
-    // LIVE
     xhr.send();
 }
 
@@ -200,7 +202,9 @@ function bridgeForStepThree(class_num) {
 var assignments_from_storage = [];
 function getAssignmentsFromStorage() {
     console.log("getting assignments from storage");
+    assignments_from_storage = [];
     assignment_countdown = full_assignment_id_list.length;
+    console.log(full_assignment_id_list);
     for (var i = 0; i < full_assignment_id_list.length; i++) {
         var ass_id = full_assignment_id_list[i] + '';
         chrome.storage.local.get(ass_id, function (assignment) {
@@ -253,7 +257,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 if (!isEmpty(key)) {
                     value = key;
                 }
-                console.log(key);
+                console.log(value);
                 sendResponse({'app_key': value});
             });
         })(sendResponse);
@@ -267,6 +271,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         delete request.ass['$$hashKey'];
         var obj = {};
         obj[request.ass.id] = request.ass;
+        console.log('william');
+        chrome.storage.local.get(request.ass.id + '', function(response) {
+            console.log(response);
+        });
         chrome.storage.local.remove(request.ass.id + '', function() {
             chrome.storage.local.set(obj);
         });
@@ -274,7 +282,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         storeNewAssignment(request.ass);
     } else if (request.method == 'getAssignments') {
         assignments_callback = sendResponse;
-        getAssignments();
+        grabAssignments();
         return true;
     }
 });
@@ -285,7 +293,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 // ******************************** GET ASSIGNMENTS ******************************
 
-function getAssignments() {
+function grabAssignments() {
     getAssignmentIDsFromStorage(getAssignmentsFromStorage);
 }
 // ******************************** STORE NEW ASSIGNMENT ******************************

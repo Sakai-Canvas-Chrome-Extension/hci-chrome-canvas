@@ -180,18 +180,22 @@
   }
      $scope.initialize = function()
     {
+      console.log($scope.tasks);
         chrome.runtime.sendMessage({method: "retrieveAppKey"}, function(response) {
           console.log('g');
-          if (response.app_key != undefined) {
-            console.log('h');
+          if (response.app_key) {
+            console.log(response.app_key);
             $scope.initializeWith(response.app_key);
           }
         });
     };
     $scope.user_obj = {};
     $scope.checkAPIKey = function() {
+      console.log('CHECK!!');
       (function ($scope) {
+        console.log('aa');
         chrome.runtime.sendMessage({method: "fetchAssignments", key: $scope.user_obj.key_field}, function(response) {
+          console.log('bb');
           if (response.error) {
             console.log(response.error);
             return;
@@ -209,7 +213,7 @@
 
           $scope.switchView(1);
           $scope.tasks = reformatTasks(response.stuff);
-          $scope.pullClasses();
+          // $scope.pullClasses();
 
           $scope.$apply();
           console.log($scope.tasks);
