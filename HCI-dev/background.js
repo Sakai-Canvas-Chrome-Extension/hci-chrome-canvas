@@ -147,10 +147,11 @@ function conformAssignmentFields() {
                 var ass = assignment_set[j];
                 var conformed_assignment = {};
                 conformed_assignment.CHANGED = false;
-                conformed_assignment.checked = false;
                 conformed_assignment.completed = 
                     ass.has_submitted_submissions ?
                         "complete" : (ass.locked_for_user ? "missed" : "todo");
+                conformed_assignment.checked = 
+                    conformed_assignment.completed=="complete" ? true : false;
                 conformed_assignment.course_code = classes[i].course_code;
                 conformed_assignment.due_at = ass.due_at;
                 conformed_assignment.id = ass.id;
