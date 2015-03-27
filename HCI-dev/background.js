@@ -279,7 +279,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.storage.local.set(obj);
         });
     } else if (request.method == 'storeNewAssignment') {
+        assignments_callback = sendResponse;
         storeNewAssignment(request.ass);
+        return true;
     } else if (request.method == 'getAssignments') {
         assignments_callback = sendResponse;
         grabAssignments();
@@ -299,19 +301,23 @@ function grabAssignments() {
 // ******************************** STORE NEW ASSIGNMENT ******************************
 
 function storeNewAssignment(ass) {
-    delete ass['$$hashKey'];
-    chrome.storage.get('last_used_id', function(response) {
-        var id = isEmpty(response) ? 0 : response.id;
-        ass.id = id;
-        var obj = {};
-        obj[id] = ass;
-        chrome.storage.set(obj);
+    chrome.storage.local.get('last_used_id', function(response) {
+        console.log(response);
+        var id_obj = {};
+        id_obj.id = isEmpty(response) ? -1 : response.last_used_id.id;
+        ++id_obj.id;
+        ass.id = id_obj.id;
+        var ass_save_obj = {};
+        ass_save_obj[ass.id] = ass;
+        chrome.storage.local.set(ass_save_obj);
+        chrome.storage.local.set({last_used_id: id_obj});
         chrome.storage.local.get('assignment_keys', function(response) {
             id_list = isEmpty(response) ? [] : response.assignment_keys;
-            console.log("id"); console.log(id);
-            id_list.push(id);
+            console.log("id"); console.log(ass.id);
+            id_list.push(ass.id);
             chrome.storage.local.remove('assignment_keys', function () {
                 chrome.storage.local.set({assignment_keys: id_list});
+                assignments_callback({});
             })
         });
     });

@@ -301,12 +301,21 @@
       {
         //save to file
         $scope.newTask.due_at.setHours($scope.grabTime.due_atTime.getHours());
-        $scope.newTask.due_at.setMinutes($scope.grabTime.due_atTime.getMinutes());        
-        console.log($scope.newTask);
-        $scope.newTask = 
-        {
-          priority: 2
-        };
+        $scope.newTask.due_at.setMinutes($scope.grabTime.due_atTime.getMinutes());  
+        $scope.newTask.CHANGED = false;
+        $scope.newTask.checked = false;
+        $scope.checkPassed($scope.newTask);
+        console.log($scope.newTask.due_at);
+        (function ($scope) {
+          chrome.runtime.sendMessage({ass: $scope.newTask, method: 'storeNewAssignment'}, function (response_dont_care) {
+            chrome.runtime.sendMessage({method: "getAssignments"}, function(response) {
+              console.log('Response: '); console.log(response);
+              $scope.tasks = reformatTasks(response.stuff);
+              $scope.$apply();
+            });
+          });
+        })($scope);
+
       }
 
     };
