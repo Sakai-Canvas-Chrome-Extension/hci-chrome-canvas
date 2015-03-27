@@ -305,14 +305,14 @@
         $scope.newTask.CHANGED = false;
         $scope.newTask.checked = false;
         $scope.checkPassed($scope.newTask);
-        console.log($scope.newTask.due_at);
+        $scope.newTask.due_at = $scope.newTask.due_at.toISOString();
         (function ($scope) {
           chrome.runtime.sendMessage({ass: $scope.newTask, method: 'storeNewAssignment'}, function (response_dont_care) {
-            chrome.runtime.sendMessage({method: "getAssignments"}, function(response) {
-              console.log('Response: '); console.log(response);
-              $scope.tasks = reformatTasks(response.stuff);
-              $scope.$apply();
-            });
+            // chrome.runtime.sendMessage({method: "getAssignments"}, function(response) {
+            //   console.log('Response: '); console.log(response);
+            //   $scope.tasks = reformatTasks(response.stuff);
+            //   $scope.$apply();
+            // });
           });
         })($scope);
 
