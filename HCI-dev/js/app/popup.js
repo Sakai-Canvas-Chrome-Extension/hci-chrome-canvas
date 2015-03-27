@@ -129,6 +129,28 @@
   /*--Panel Setup--END */
 
   /*--Panel Data Linking Setup--START */ 
+  //Set simple What's Next
+  $scope.findWhatsNext = function()
+  {console.log('OVer here');
+    var compare = function (a,b) {
+      if (new Date(a.due_at) < new Date(b.due_at))
+      {   return -1;}
+      if (new Date(a.due_at) > new Date(b.due_at))
+      {  return 1;}
+      return 0;
+    };
+    $scope.tasks.sort(compare);
+    var now = new Date();
+    for(var i; i<$scope.tasks.length; i++)
+    {
+      if(new Date($scope.tasks[i].due_at) > now)
+      {
+        $scope.whatsnext = $scope.tasks[i];
+        console.log($scope.whatsnext );
+        return;
+      }
+    }
+  };
 
     //Pull class codes from task list and fill courseList for color mapping
     $scope.pullClasses = function()
@@ -316,7 +338,10 @@
             // });
           });
         })($scope);
-
+        $scope.newTask =
+        {
+          priority: 2
+        };
       }
 
     };

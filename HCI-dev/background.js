@@ -159,6 +159,7 @@ function conformAssignmentFields() {
                 conformed_assignment.passed = 
                     ass.locked_for_user ? "past" : "future";
                 conformed_assignment.priority = 2;
+                conformed_assignment.description = ass.description;
                 conformed_assignment.status = 
                     !ass.locked_for_user ? (ass.has_submitted_submissions ? "Submitted" : "Not Started") : "Closed";
                 conformed_assignments.push(conformed_assignment);
