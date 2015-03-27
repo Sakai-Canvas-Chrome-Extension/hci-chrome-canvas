@@ -7,19 +7,17 @@
 			</div>
 			<div class=" col-12" style="margin: 10px 0px">
 					<div class=" col-5" style="padding: 0 5px">
-				      	<select class="form-control" ng-model="codes">
+				      	<select class="form-control" ng-model="codes" data-ng-init = "codes='future'" style="padding: 4px 5px">
 						  <option value="">All</option>
 						  <option disabled>———————</option>
-						  <option value="Class1">Class1</option>
-						  <option value="Class2">Class2</option>
-						  <option value="Class3">Class3</option>
+						  <option ng-repeat ="course in courseList" ng-value="course">{{course}}</option>
 						  <option disabled>———————</option>
 						  <option value="missed">Missed Tasks</option>
 						  <option value="complete">Finished Tasks</option>
 						  <option value="todo">Unfinished Tasks</option>
 						  <option disabled>———————</option>
 						  <option value="past">Past Tasks</option>
-						  <option value="future">Upcoming Tasks</option>
+						  <option value="future" selected>Upcoming Tasks</option>
 
 						</select>
 					</div>
