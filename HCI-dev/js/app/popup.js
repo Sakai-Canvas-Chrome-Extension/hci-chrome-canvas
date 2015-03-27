@@ -10,6 +10,7 @@
     {
         $scope.current = $scope.views[index];
     };
+   //list of courses
    //supported class colors
     $scope.supportedColors = [
       {'background-color': '#555587'}, {'background-color': '#92213A'}, 
@@ -55,7 +56,6 @@
 
 
     //TEST DATA -- START
-    $scope.courseList = ['Class1', 'Class2', 'Class3', 'Class4'];
     // $scope.tasks =
     // [
     //   {
@@ -132,7 +132,7 @@
   /*--Panel Data Linking Setup--START */ 
 
     //Pull class codes from task list and fill courseList for color mapping
-    $scope. pullClasses = function()
+    $scope.pullClasses = function()
     {
 /*
       $scope.canvasCourses = [];//pull canvas courses in order to match id with course_code
@@ -147,10 +147,17 @@
 
       };
 */
-      for(task in $scope.tasks)
+     $scope.courseList = [];
+
+      for(var i = 0; i< $scope.tasks.length; i++)
       {
-        $scope.courseList.push(task.course_code);
+        if($scope.courseList.indexOf($scope.tasks[i].course_code)<0)
+        {
+          $scope.courseList.push($scope.tasks[i].course_code);
+        }
       }
+              console.log($scope.courseList);
+
 
     };
 
@@ -197,6 +204,8 @@
 
           $scope.switchView(1);
           $scope.tasks = local_tasks;
+          $scope.pullClasses();
+
           $scope.$apply();
           console.log($scope.tasks);
             //pull data from canvas and run update on files
