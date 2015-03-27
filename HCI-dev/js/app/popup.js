@@ -56,62 +56,62 @@
 
     //TEST DATA -- START
     $scope.courseList = ['Class1', 'Class2', 'Class3', 'Class4'];
-    $scope.tasks =
-    [
-      {
-        name: 'Assignment1',
-        status: 'Not Started',
-        due_at: '2015-06-01T22:59:00-06:00',
-        priority: 2,
-        course_code: 'Class2',
-        checked: true
-      },
-      {
-        name: 'Assignment2',
-        status: 'Not Started',
-        due_at: '2015-03-01T23:19:00-06:00',
-        priority: 1,
-        course_code: 'Class2',
-        checked: false
+    // $scope.tasks =
+    // [
+    //   {
+    //     name: 'Assignment1',
+    //     status: 'Not Started',
+    //     due_at: '2015-06-01T22:59:00-06:00',
+    //     priority: 2,
+    //     course_code: 'Class2',
+    //     checked: true
+    //   },
+    //   {
+    //     name: 'Assignment2',
+    //     status: 'Not Started',
+    //     due_at: '2015-03-01T23:19:00-06:00',
+    //     priority: 1,
+    //     course_code: 'Class2',
+    //     checked: false
 
-      },
-      {
-        name: 'Assignment3',
-        status: 'Not Started',
-        due_at: '2015-02-08T13:59:00-06:00',
-        priority: 4,
-        course_code: 'Class3',
-        checked: true
+    //   },
+    //   {
+    //     name: 'Assignment3',
+    //     status: 'Not Started',
+    //     due_at: '2015-02-08T13:59:00-06:00',
+    //     priority: 4,
+    //     course_code: 'Class3',
+    //     checked: true
 
-      },
-      {
-        name: 'Assignment4',
-        status: 'Not Started',
-        due_at: '2015-04-01T23:59:00-06:00',
-        priority: 2,
-        course_code: 'Class1',
-        checked: true
+    //   },
+    //   {
+    //     name: 'Assignment4',
+    //     status: 'Not Started',
+    //     due_at: '2015-04-01T23:59:00-06:00',
+    //     priority: 2,
+    //     course_code: 'Class1',
+    //     checked: true
 
-      },
-      {
-        name: 'Assignment5',
-        status: 'Not Started',
-        due_at: '2015-03-01T23:59:00-06:00',
-        priority: 2,
-        course_code: 'Class4',
-        checked: false
+    //   },
+    //   {
+    //     name: 'Assignment5',
+    //     status: 'Not Started',
+    //     due_at: '2015-03-01T23:59:00-06:00',
+    //     priority: 2,
+    //     course_code: 'Class4',
+    //     checked: false
 
-      },
-      {
-        name: 'Assignment6',
-        status: 'Not Started',
-        due_at: '2015-03-27T23:59:00-06:00',
-        priority: 4,
-        course_code: 'Class1',
-        checked: false
+    //   },
+    //   {
+    //     name: 'Assignment6',
+    //     status: 'Not Started',
+    //     due_at: '2015-03-27T23:59:00-06:00',
+    //     priority: 4,
+    //     course_code: 'Class1',
+    //     checked: false
 
-      }
-    ];
+    //   }
+    // ];
     
   //TEST DATA -- END
 
@@ -174,31 +174,43 @@
     };
     $scope.user_obj = {};
     $scope.checkAPIKey = function() {
-      chrome.runtime.sendMessage({method: "getAssignments", key: $scope.user_obj.key_field}, function(response) {
-        if (response.error) {
-          console.log(response.error);
-          return;
-        }
-        // key is good! save it.
-        var save_obj = {};
-        save_obj.method = "storeAppKey";
-        save_obj.key = response.key;
-        // console.log(save_obj.key);
-        chrome.runtime.sendMessage(save_obj);
+      (function ($scope) {
+        chrome.runtime.sendMessage({method: "getAssignments", key: $scope.user_obj.key_field}, function(response) {
+          if (response.error) {
+            console.log(response.error);
+            return;
+          }
+          console.log($scope);
+          // key is good! save it.
+          var save_obj = {};
+          save_obj.method = "storeAppKey";
+          save_obj.key = response.key;
+          // console.log(save_obj.key);
+          chrome.runtime.sendMessage(save_obj);
+          console.log("check api switch");
 
-        $scope.switchView(1);
-        $scope.tasks = response.stuff;
-        console.log($scope.tasks);
-          //pull data from canvas and run update on files
-          /*
-            $scope.tasks = //read from files 
-            $scope.courseColors = //read from file
-          */ 
-      });
+          var local_tasks = [];
+          for (var i = 0; i < response.stuff.length; i++) {
+            var key = Object.keys(response.stuff[i])[0];
+            local_tasks[i] = response.stuff[i][key];
+          }
+
+          $scope.switchView(1);
+          $scope.tasks = local_tasks;
+          $scope.$apply();
+          console.log($scope.tasks);
+            //pull data from canvas and run update on files
+            /*
+              $scope.tasks = //read from files 
+              $scope.courseColors = //read from file
+            */ 
+        });
+      })($scope);
     }
     $scope.initializeWith = function(app_key) { //app_key could be empty string
       console.log($scope.switchView);
-        $scope.switchView(1);
+        // $scope.switchView(1);
+        // console.log("initializeWith switch");
         console.log($scope.current);
           //pull data and save to file
           /*

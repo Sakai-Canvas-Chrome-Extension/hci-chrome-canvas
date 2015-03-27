@@ -128,7 +128,7 @@ function mergeAssignmentIDs() {
             }
         }
     }
-    chrome.storage.local.set({'assignment_keys': full_assignment_id_list}, function () {
+    chrome.storage.local.set({assignment_keys: full_assignment_id_list}, function () {
         conformAssignmentFields();
     });
 }
@@ -258,5 +258,33 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     } else if (request.method == 'storeAppKey') {
         console.log(request.key);
         chrome.storage.local.set({'app_key': request.key}); //callback unneccessary
+    } else if (request.method == 'modifyAssignment') {
+        var obj = {};
+        obj[request.ass.id] = request.ass;
+        chrome.storage.local.set(obj);
+    } else if (request.method == 'storeNewAssignment') {
+        storeNewAssignment(request.ass);
     }
 });
+
+
+
+// ******************************** END MESSAGE PASSER ********************************
+
+// ******************************** STORE NEW ASSIGNMENT ******************************
+
+function storeNewAssignment(ass) {
+    chrome.storage.get('last_used_id', function(response) {
+        var id = isEmpty(response) ? 0 : response.id;
+        ass.id = id;
+        var obj = {};
+        obj[id] = ass;
+        chrome.storage.set(obj);
+        chrome.storage.local.get('assignment_keys', function(response) {
+            id_list = isEmpty(response) ? [] : response.assignment_keys;
+            console.log("id"); console.log(id);
+            id_list.push(id);
+            chrome.storage.local.set({assignment_keys: id_list});
+        });
+    });
+}
