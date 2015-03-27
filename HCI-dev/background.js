@@ -68,11 +68,11 @@ function fetchData() {
         }
     }
     // DEBUG
-    chrome.storage.local.clear(function() { // clears all stored data
-        xhr.send();
-    });
+    // chrome.storage.local.clear(function() { // clears all stored data
+    //     xhr.send();
+    // });
     // LIVE
-    // xhr.send();
+    xhr.send();
 }
 
 function getAssignments(classes){
@@ -104,16 +104,16 @@ function bridgeForStepTwo(totalNumClasses) {
     ++class_count;
     if (class_count == totalNumClasses) {
         class_count = 0;
-        getAssignmentIDsFromStorage();
+        getAssignmentIDsFromStorage(mergeAssignmentIDs);
     }
 }
 
 var full_assignment_id_list = [];
-function getAssignmentIDsFromStorage() {
+function getAssignmentIDsFromStorage(nextFunction) {
     console.log('d');
     chrome.storage.local.get('assignment_keys', function(response) {
         full_assignment_id_list = isEmpty(response) ? [] : response.assignment_keys;
-        mergeAssignmentIDs();
+        nextFunction();
     });
 }
 
@@ -128,8 +128,10 @@ function mergeAssignmentIDs() {
             }
         }
     }
-    chrome.storage.local.set({assignment_keys: full_assignment_id_list}, function () {
-        conformAssignmentFields();
+    chrome.storage.local.remove('assignment_keys', function () {
+        chrome.storage.local.set({assignment_keys: full_assignment_id_list}, function () {
+            conformAssignmentFields();
+        });
     });
 }
 
@@ -174,9 +176,12 @@ function updateAssignmentList() {
                 } else {
                     var obj = {};
                     obj[ass_id] = ass;
-                    chrome.storage.local.set(obj, function () {
-                        bridgeForStepThree(i);
+                    chrome.storage.local.remove(ass_id, function() {
+                        chrome.storage.local.set(obj, function () {
+                            bridgeForStepThree(i);
+                        });
                     });
+
                 }
             });
         })(ass, i);
@@ -186,7 +191,6 @@ function updateAssignmentList() {
 var ass_count = 0;
 function bridgeForStepThree(class_num) {
     ++ass_count;
-    console.log(ass_count + " " + conformed_assignments.length);
     if (ass_count == conformed_assignments.length) {
         ass_count = 0;
         getAssignmentsFromStorage();
@@ -209,7 +213,6 @@ var assignment_countdown = -1; // set by preceding function
 var assignments_callback = null; // set by message passer
 
 function finalBridge() {
-    console.log(assignment_countdown);
     --assignment_countdown;
     if (assignment_countdown == 0) {
         if (assignments_callback) {
@@ -235,7 +238,7 @@ function finalBridge() {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log(request.method);
-    if (request.method == "getAssignments") {
+    if (request.method == "fetchAssignments") {
         console.log('a');
         if(request.key) {
             app_key = request.key;
@@ -257,13 +260,22 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         return true; // indicates that I want to send a response asynchronously
     } else if (request.method == 'storeAppKey') {
         console.log(request.key);
-        chrome.storage.local.set({'app_key': request.key}); //callback unneccessary
+        chrome.storage.local.remove('app_key', function() {
+           chrome.storage.local.set({'app_key': request.key}); //callback unneccessary
+        });
     } else if (request.method == 'modifyAssignment') {
+        delete request.ass['$$hashKey'];
         var obj = {};
         obj[request.ass.id] = request.ass;
-        chrome.storage.local.set(obj);
+        chrome.storage.local.remove(request.ass.id + '', function() {
+            chrome.storage.local.set(obj);
+        });
     } else if (request.method == 'storeNewAssignment') {
         storeNewAssignment(request.ass);
+    } else if (request.method == 'getAssignments') {
+        assignments_callback = sendResponse;
+        getAssignments();
+        return true;
     }
 });
 
@@ -271,9 +283,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 // ******************************** END MESSAGE PASSER ********************************
 
+// ******************************** GET ASSIGNMENTS ******************************
+
+function getAssignments() {
+    getAssignmentIDsFromStorage(getAssignmentsFromStorage);
+}
 // ******************************** STORE NEW ASSIGNMENT ******************************
 
 function storeNewAssignment(ass) {
+    delete ass['$$hashKey'];
     chrome.storage.get('last_used_id', function(response) {
         var id = isEmpty(response) ? 0 : response.id;
         ass.id = id;
@@ -284,7 +302,9 @@ function storeNewAssignment(ass) {
             id_list = isEmpty(response) ? [] : response.assignment_keys;
             console.log("id"); console.log(id);
             id_list.push(id);
-            chrome.storage.local.set({assignment_keys: id_list});
+            chrome.storage.local.remove('assignment_keys', function () {
+                chrome.storage.local.set({assignment_keys: id_list});
+            })
         });
     });
 }

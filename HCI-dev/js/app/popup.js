@@ -163,11 +163,20 @@
   /*--Panel Data Linking Setup --END*/ 
 
   /*--Pull, save, retrieve, and update data--START */
-
+  function reformatTasks(orig) {
+    var local_tasks = [];
+    for (var i = 0; i < orig.length; i++) {
+      var key = Object.keys(orig[i])[0];
+      local_tasks[i] = orig[i][key];
+    }
+    return local_tasks;
+  }
      $scope.initialize = function()
     {
         chrome.runtime.sendMessage({method: "retrieveAppKey"}, function(response) {
-          if (response.app_key != '') {
+          console.log('g');
+          if (response.app_key != undefined) {
+            console.log('h');
             $scope.initializeWith(response.app_key);
           }
         });
@@ -175,7 +184,7 @@
     $scope.user_obj = {};
     $scope.checkAPIKey = function() {
       (function ($scope) {
-        chrome.runtime.sendMessage({method: "getAssignments", key: $scope.user_obj.key_field}, function(response) {
+        chrome.runtime.sendMessage({method: "fetchAssignments", key: $scope.user_obj.key_field}, function(response) {
           if (response.error) {
             console.log(response.error);
             return;
@@ -189,14 +198,10 @@
           chrome.runtime.sendMessage(save_obj);
           console.log("check api switch");
 
-          var local_tasks = [];
-          for (var i = 0; i < response.stuff.length; i++) {
-            var key = Object.keys(response.stuff[i])[0];
-            local_tasks[i] = response.stuff[i][key];
-          }
+
 
           $scope.switchView(1);
-          $scope.tasks = local_tasks;
+          $scope.tasks = reformatTasks(response.stuff);
           $scope.$apply();
           console.log($scope.tasks);
             //pull data from canvas and run update on files
@@ -208,10 +213,16 @@
       })($scope);
     }
     $scope.initializeWith = function(app_key) { //app_key could be empty string
-      console.log($scope.switchView);
         // $scope.switchView(1);
         // console.log("initializeWith switch");
-        console.log($scope.current);
+        (function ($scope) {
+          chrome.runtime.sendMessage({method: "getAssignments"}, function(response) {
+            console.log('Response: '); console.log(response);
+            $scope.tasks = reformatTasks(response.stuff);
+            $scope.switchView(1);
+            $scope.$apply();
+          });
+        })($scope);
           //pull data and save to file
           /*
             var courses = //get array of course name Strings
@@ -426,8 +437,13 @@ myApp.controller("RatingCtrl", function ($scope) {
     $scope.percent = 100 * (value / $scope.max);
   };
   $scope.saveRating = function(task) {
-    console.log(task);
-    console.log("I should save (TODO) " + $scope.overStar);
+    if (task.priority != $scope.overStar) {
+      task.priority = $scope.overStar;
+      var save_obj = {};
+      save_obj['method'] = 'modifyAssignment';
+      save_obj['ass'] = task;
+      chrome.runtime.sendMessage(save_obj);
+    }
   }
 
   $scope.ratingStates = [
@@ -438,3 +454,11 @@ myApp.controller("RatingCtrl", function ($scope) {
     {stateOff: 'glyphicon-off'}
   ];
 });
+
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+    return true;
+}
