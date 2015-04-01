@@ -337,7 +337,9 @@ $scope.tasks;
             // });
           });
         })($scope);
-        $scope.$emit('refresh', $scope.newTask);
+        $scope.tasks.push($scope.newTask);
+        $scope.pullClasses();
+        $scope.$emit('refreshCourseList');
         $scope.newTask =
         {
           priority: 2
@@ -353,11 +355,39 @@ $scope.tasks;
         save_obj['ass'] = task;
         chrome.runtime.sendMessage(save_obj);
     };
-    $scope.$on('refresh', function(event, task) { console.log($scope.tasks);if($scope.tasks!=undefined){$scope.tasks.push(task); $scope.$apply();}
+    $scope.$on('refreshCourseList', function(event) { $scope.pullClasses();
     });
     /*--Pull, save, retrieve, and update data--END */ 
 
+    //modal open function
+    $scope.open = function (type, task) {
+      console.log(task);
 
+        if(type==0)
+        {
+          view = 'newtask.html';
+        }
+        else
+        {
+          view = 'whatsnext.html';
+
+        }
+        var modalInstance = $modal.open({
+          templateUrl: view,
+          scope: $scope,
+          controller: 'ModalInstanceCtrl',
+          resolve: {
+            task: function () {
+              return task;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+        }, function () {
+          $log.info('Modal dismissed at: ' + new Date());
+        });
+      };
 
 });
 
@@ -369,41 +399,13 @@ $scope.tasks;
 
 /*--Helper Controllers & Filters--*/
 
-myApp.controller('ModalCtrl', function ($scope, $modal, $log) {
-  $scope.open = function (type, task) {
-  console.log(task);
 
-    if(type==0)
-    {
-      view = 'newtask.html';
-    }
-    else
-    {
-      view = 'whatsnext.html';
-
-    }
-    var modalInstance = $modal.open({
-      templateUrl: view,
-      controller: 'ModalInstanceCtrl',
-      resolve: {
-        task: function () {
-          return task;
-        }
-      }
-    });
-
-    modalInstance.result.then(function (selectedItem) {
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
-});
 
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
-myApp.controller('ModalInstanceCtrl', function ($scope, $modalInstance, task) {
+myApp.controller('ModalInstanceCtrl', function ($scope, $rootScope, $modalInstance, task) {
   $scope.nextTask = task;
-  $scope.$on('closeModals', function(event){$scope.ok() });
+  $rootScope.$on('closeModals', function(event){$scope.ok() });
 
   $scope.ok = function () {
     $modalInstance.close();
