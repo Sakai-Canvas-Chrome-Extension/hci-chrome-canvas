@@ -25,13 +25,13 @@
 			  			<span class="glyphicon glyphicon-plus" ></span> New task
 					</button>
 
-					<button type="button" ng-controller="ModalCtrl" ng-click="open(1)" class="btn btn-custom">
+					<button type="button" ng-controller="ModalCtrl" ng-click="open(1, findWhatsNext())" class="btn btn-custom">
 			  			</span> What's next?
 					</button>
 			</div>
 		</div>
 		<section id="tasklist" ng-controller="MainController">
-				<div ng-repeat-start=" task in tasks | orderBy: 'due_at' | groupBy:'due_at' | filter:codes"class="day-header col-12" data-ng-if="task.CHANGED" style="margin-top: 20px">
+				<div ng-repeat-start=" task in tasks | orderBy: 'due_at' | groupBy:'due_at' | filter:codes "class="day-header col-12" data-ng-if="task.CHANGED" style="margin-top: 20px">
 			   		<h3 style="margin: 0px; padding-bottom: 0px">
 			   			<a id="{{task.due_at | date:'yyyy-MM-dd' }}">
 			      			<small style="font-size: 12pt" >{{task.due_at | date: 'longDate'}} - <small style="font-size: 11pt">{{(task.due_at | date: 'EEEE').toUpperCase()}}</small></small>

@@ -1,8 +1,8 @@
-﻿myApp.controller("MainController", function ($scope, $http, $location ,$anchorScroll) {
+﻿myApp.controller("MainController", function ($scope, $rootScope, $http, $location ,$anchorScroll, $modal, $log) {
     /*--Panel Setup--START */ 
     //app views 
     $scope.views = ['startpage.html', 'tasklist.html', 'newtask.html', 'whatsnext.html'];
-    
+$scope.tasks;
     //function for switching views
     $scope.current = $scope.views[0];
     $scope.switchView = function(index)
@@ -131,7 +131,7 @@
   /*--Panel Data Linking Setup--START */ 
   //Set simple What's Next
   $scope.findWhatsNext = function()
-  {console.log('OVer here');
+  {
     var compare = function (a,b) {
       if (new Date(a.due_at) < new Date(b.due_at))
       {   return -1;}
@@ -141,13 +141,12 @@
     };
     $scope.tasks.sort(compare);
     var now = new Date();
-    for(var i; i<$scope.tasks.length; i++)
+    for(var i=0; i<$scope.tasks.length; i++)
     {
-      if(new Date($scope.tasks[i].due_at) > now)
+      if(new Date($scope.tasks[i].due_at) > now && !$scope.tasks[i].checked)
       {
-        $scope.whatsnext = $scope.tasks[i];
-        console.log($scope.whatsnext );
-        return;
+        var highestPriority = i;
+        return $scope.tasks[i];
       }
     }
   };
@@ -298,7 +297,7 @@
 
     $scope.createNewTask = function()
     {
-      console.log($scope.newTask);
+      console.log($scope.tasks);
       $scope.validTitle = true;
       $scope.validClassCode = true;
       $scope.validDateTime = true;
@@ -338,10 +337,13 @@
             // });
           });
         })($scope);
+        $scope.$emit('refresh', $scope.newTask);
         $scope.newTask =
         {
           priority: 2
         };
+              $rootScope.$broadcast('closeModals');
+
       }
 
     };
@@ -351,10 +353,13 @@
         save_obj['ass'] = task;
         chrome.runtime.sendMessage(save_obj);
     };
+    $scope.$on('refresh', function(event, task) { console.log($scope.tasks);if($scope.tasks!=undefined){$scope.tasks.push(task); $scope.$apply();}
+    });
     /*--Pull, save, retrieve, and update data--END */ 
 
-});
 
+
+});
 
 
 
@@ -365,8 +370,9 @@
 /*--Helper Controllers & Filters--*/
 
 myApp.controller('ModalCtrl', function ($scope, $modal, $log) {
+  $scope.open = function (type, task) {
+  console.log(task);
 
-  $scope.open = function (type) {
     if(type==0)
     {
       view = 'newtask.html';
@@ -379,6 +385,11 @@ myApp.controller('ModalCtrl', function ($scope, $modal, $log) {
     var modalInstance = $modal.open({
       templateUrl: view,
       controller: 'ModalInstanceCtrl',
+      resolve: {
+        task: function () {
+          return task;
+        }
+      }
     });
 
     modalInstance.result.then(function (selectedItem) {
@@ -390,10 +401,12 @@ myApp.controller('ModalCtrl', function ($scope, $modal, $log) {
 
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
-myApp.controller('ModalInstanceCtrl', function ($scope, $modalInstance) {
+myApp.controller('ModalInstanceCtrl', function ($scope, $modalInstance, task) {
+  $scope.nextTask = task;
+  $scope.$on('closeModals', function(event){$scope.ok() });
 
   $scope.ok = function () {
-    $modalInstance.close($scope.selected.item);
+    $modalInstance.close();
   };
 
   $scope.cancel = function () {

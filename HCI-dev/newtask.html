@@ -1,4 +1,4 @@
-<div class="modal-body row" ng-controller="MainController" >
+<div class="modal-body row" ng-controller="MainController" data-ng-init="task()">
             <h2 class="text-center">New Task</h2>
     <div class="col-12 ">
         <strong style="color: #FD3C01;">Create a task. </strong>Add your own tasks to keep track of other assignments. Set a due date, title, etc.
@@ -43,7 +43,7 @@
             </form>
             <div class="col-12 text-right">
               <button class="btn btn-custom" ng-click="cancel()"> Close</button>
-              <button class="btn btn-success" ng-click="createNewTask()"> Create</button>
+              <button class="btn btn-success" ng-click="createNewTask(tasks)"> Create</button>
             <div>  
     </div>
   
