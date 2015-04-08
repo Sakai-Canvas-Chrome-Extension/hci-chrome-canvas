@@ -209,19 +209,27 @@ $scope.tasks;
           }
         });
     };
+    $scope.startpageError = {};
+    $scope.startpageSuccess = {};
+    $scope.syncBtn = {};
+
     $scope.user_obj = {};
     $scope.checkAPIKey = function() {
-      console.log('CHECK!!');
       (function ($scope) {
-        console.log('aa');
+          $scope.startpageError = {};
+          $scope.startpageSuccess.message = 'Syncing...'
+
         chrome.runtime.sendMessage({method: "fetchAssignments", key: $scope.user_obj.key_field}, function(response) {
-          console.log('bb');
           if (response.error) {
-            console.log(response.error);
-            $scope.startpageError=response.error;
+            $scope.startpageSuccess={};
+            $scope.startpageError.message=response.error;
+            $scope.syncBtn.disable = false;
+                        $scope.$apply();
+
             return;
           }
-          console.log($scope);
+          $scope.startpageError={};
+
           // key is good! save it.
           var save_obj = {};
           save_obj.method = "storeAppKey";
@@ -245,7 +253,8 @@ $scope.tasks;
             */ 
         });
       })($scope);
-    }
+      return false;//boolean for isChecking disabled button startpage.html
+    };
     $scope.initializeWith = function(app_key) { //app_key could be empty string
         // $scope.switchView(1);
         // console.log("initializeWith switch");
@@ -367,6 +376,10 @@ $scope.tasks;
         {
           view = 'newtask.html';
         }
+        else if (type==1)
+        {
+          view= 'task.html';
+        }
         else
         {
           view = 'whatsnext.html';
@@ -404,7 +417,7 @@ $scope.tasks;
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
 myApp.controller('ModalInstanceCtrl', function ($scope, $rootScope, $modalInstance, task) {
-  $scope.nextTask = task;
+  $scope.nTask = task;
   $rootScope.$on('closeModals', function(event){$scope.ok() });
 
   $scope.ok = function () {

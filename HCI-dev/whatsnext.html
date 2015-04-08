@@ -2,17 +2,17 @@
             <h2 class="text-center">What's next</h2>
     <div class="col-12 ">
         <strong style="color: #FD3C01;">Something to work on. </strong>Here's info on an important, upcoming task.
-            <div class="bs-callout bs-callout-default col-offset-1 col-11" ng-if="nextTask==undefined">
+            <div class="bs-callout bs-callout-default col-offset-1 col-11" ng-if="nTask==undefined">
                 <h4>There's nothing to work on next!</h4>
             </div>
-            <div class="bs-callout bs-callout-default col-offset-1 col-11" ng-if="nextTask!=undefined">
+            <div class="bs-callout bs-callout-default col-offset-1 col-11" ng-if="nTask!=undefined">
                 <h4>Task</h4>
-                <p>{{nextTask.course_code}}: {{nextTask.name}}
+                <p>{{nTask.course_code}}: {{nTask.name}}
                 <h4>Due:</h4>
-                <p>{{nextTask.due_at | date: 'EEEE'}}, {{nextTask.due_at | date: 'longDate'}}  - {{nextTask.due_at | date: 'shortTime'}}
+                <p>{{nTask.due_at | date: 'EEEE'}}, {{nTask.due_at | date: 'longDate'}}  - {{nTask.due_at | date: 'shortTime'}}
                 <h4>Description</h4>
-                <p ng-if="nextTask.description==undefined">none</p>
-                <p ng-bind-html="nextTask.description"></p>
+                <p ng-if="nTask.description==undefined">none</p>
+                <p ng-bind-html="nTask.description"></p>
             </div>
             <div class="col-12 text-right">
               <button class="btn btn-custom" ng-click="cancel()"> Close</button>

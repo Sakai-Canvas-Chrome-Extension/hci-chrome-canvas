@@ -25,26 +25,29 @@
 			  			<span class="glyphicon glyphicon-plus" ></span> New task
 					</button>
 
-					<button type="button" ng-click="open(1, findWhatsNext())" class="btn btn-custom">
+					<button type="button" ng-click="open(2, findWhatsNext())" class="btn btn-custom">
 			  			</span> What's next?
 					</button>
 			</div>
 		</div>
 		<section id="tasklist" ng-controller="MainController">
-				<div ng-repeat-start=" task in tasks | orderBy: 'due_at' | groupBy:'due_at' | filter:codes "class="day-header col-12" data-ng-if="task.CHANGED" style="margin-top: 20px">
+			<div class="text-center col-10 col-offset-1" style="margin-top: 100px"ng-if="results.length<=0" >There are no matching tasks. Select another filter to view other tasks.</div>
+				<div ng-repeat-start=" task in tasks | orderBy: 'due_at' | groupBy:'due_at' | filter:codes as results"class="day-header col-12" data-ng-if="task.CHANGED" style="margin-top: 20px">
 			   		<h3 style="margin: 0px; padding-bottom: 0px">
 			   			<a id="{{task.due_at | date:'yyyy-MM-dd' }}">
-			      			<small style="font-size: 12pt" >{{task.due_at | date: 'longDate'}} - <small style="font-size: 11pt">{{(task.due_at | date: 'EEEE').toUpperCase()}}</small></small>
+			      			<small style="font-size: 12pt" ng-if="task.due_at">{{task.due_at | date: 'longDate'}} - <small style="font-size: 11pt">{{(task.due_at | date: 'EEEE').toUpperCase()}}</small></small>
+			      			<small style="font-size: 12pt" ng-if="!task.due_at">Due Date - <small style="font-size: 11pt">NONE</small></small>
 			      		</a>
 			   		</h3>
 			   	</div>
 					<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="supportedColors[courseList.indexOf(task.course_code)]">{{task.course_code}}</span></div>
-				  	<a class="list-group-item col-12" ng-repeat-end ng-class="{'singleTask': ($index-1 < tasks.length && tasks[$index+1].CHANGED || $index == tasks.length-1)}">
+				  	<a class="list-group-item col-12" ng-repeat-end ng-class="{'singleTask': ($index-1 < tasks.length && tasks[$index+1].CHANGED || $index == tasks.length-1)}" ng-click="open(1,task)">
 				  		<div class="col-6" style="padding: 0px">
 				  			<h5> {{task.name}}<br><small ng-if="!(task.status==undefined)">Status: {{task.status}}</small></h5>
 				  		</div>
 				  		<div class="col-4" style="padding: 0px">
-				  			<span style="font-weight: bold; font-size: 12px">Due: {{task.due_at | date: 'shortTime'}}</span> 
+				  			<span style="font-weight: bold; font-size: 12px" ng-if="task.due_at">Due: {{task.due_at | date: 'shortTime'}}</span>
+				  			<span style="font-weight: bold; font-size: 12px" ng-if="!task.due_at">Due: <span style="color: gray;">not set</span> </span> 
 				  			<br> 
 				  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" ng-click="saveRating(task)" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" data-ng-init="rate=task.priority"></rating></span>
 				  		</div>

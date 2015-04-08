@@ -5,19 +5,25 @@
 
 		  	<div class="bs-callout bs-callout-default col-offset-1 col-11">
 		  		<h4>Step 1:</h4>
-		  		<p>Login to Canvas at <a href"https://lss.at.ufl.edu/" target="_blank">https://lss.at.ufl.edu/</a> 
+		  		<p>Login to Canvas at <a href="https://lss.at.ufl.edu/" target="_blank">https://lss.at.ufl.edu/</a> 
 		  		<h4>Step 2:</h4>
 		  		<p>Navigate to "Settings" in the top-right corner of your dashboard.
 		  		<h4>Step 3:</h4>
-		  		<p>Create a "New API Key" and copy your new token.
+		  		<p>At the bottom of the page, create a "New Access Token" and copy your new token.
 			</div>
 		<div class=" col-12 text-center" style="margin-bottom: 10px">
 				<form class="form-inline">
 				  <div class="form-group">
 				    <input ng-model="user_obj.key_field" class="form-control" placeholder="Paste API token here...">
 				  </div>
-				  <button class="btn btn-success" ng-click="checkAPIKey()"><span class="glyphicon glyphicon-retweet"></span> Sync</button>
+				  <button class="btn btn-success" ng-click="syncBtn.disable=true; checkAPIKey()" ng-disabled="syncBtn.disable"><span class="glyphicon glyphicon-retweet"></span> Sync</button>
 				</form>
+			<div data-ng-show="startpageError" class="col-12 text-center text-danger" >
+                <strong data-ng-bind="startpageError.message"></strong>
+            </div>
+            <div data-ng-show="startpageSuccess" class="col-12 text-center text-success" >
+                <strong data-ng-bind="startpageSuccess.message"></strong>
+            </div>
 		</div>
 		<p>After syncing, view your assignments, add new tasks, and see "What's Next?" to work on.</p>
 	</div>

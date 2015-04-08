@@ -68,7 +68,7 @@ function fetchData() {
             // innerText does not let the attacker inject HTML elements.
                 classes = convertToJSON(xhr.responseText);
                 if(classes.errors != null) {
-                    assignments_callback({error: "Invalid API Key"});
+                    assignments_callback({error: "Invalid Access Token"});
                 } else {
                     getAssignments(classes);
                 }
