@@ -57,8 +57,8 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 5) respond to front end messages with our array
 
    ************************************************************************** */
-var app_key = '1016~EnIw6S4NDs4swhTCNU7p7xsU4nyhjSuGDxMaDLKCYFx6RBe1RriCukfLY8f8zuU2'; //set by getAssignments message
-
+// var app_key = '1016~EnIw6S4NDs4swhTCNU7p7xsU4nyhjSuGDxMaDLKCYFx6RBe1RriCukfLY8f8zuU2'; //set by getAssignments message
+var app_key = '';
 function fetchData() {
     console.log('b');
     var xhr = new XMLHttpRequest();
@@ -247,9 +247,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log(request.method);
     if (request.method == "fetchAssignments") {
         console.log('a');
-        if(request.key) {
-            app_key = request.key;
-        }
+        app_key = request.key;
         assignments_callback = sendResponse;
         fetchData();
         return true;
