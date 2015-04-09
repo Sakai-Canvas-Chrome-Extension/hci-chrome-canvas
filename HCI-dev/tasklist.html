@@ -49,11 +49,11 @@
 				  			<span style="font-weight: bold; font-size: 12px" ng-if="task.due_at">Due: {{task.due_at | date: 'shortTime'}}</span>
 				  			<span style="font-weight: bold; font-size: 12px" ng-if="!task.due_at">Due: <span style="color: gray;">not set</span> </span> 
 				  			<br> 
-				  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" ng-click="saveRating(task)" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" data-ng-init="rate=task.priority"></rating></span>
+				  			<span style="font-weight: bold; font-size: 12px" ng-controller="RatingCtrl">Priority: <rating ng-model="rate" ng-click="$event.stopPropagation(); saveRating(task)" max="max" readonly="isReadonly" on-hover="hoveringOver(value)" on-leave="overStar = null" data-ng-init="rate=task.priority"></rating></span>
 				  		</div>
 				  		<div class="col-2" style="padding: 0px">
 				  			<br>
-							<button type="button" class="btn btn-xs pull-right" ng-class="{'btn-success': task.checked, 'btn-default': !task.checked}" ng-if="!checkPassed(task) || checkPassed(task)&&task.checked" ng-click="task.checked = !task.checked; saveChecked(task)" ng-disabled="checkPassed(task)">
+							<button type="button" class="btn btn-xs pull-right" ng-class="{'btn-success': task.checked, 'btn-default': !task.checked}" ng-if="!checkPassed(task) || checkPassed(task)&&task.checked" ng-click="$event.stopPropagation(); task.checked = !task.checked; saveChecked(task)" ng-disabled="checkPassed(task)">
 					  			<span class="glyphicon glyphicon-ok" ></span>
 							</button>
 							<button type="button" class="btn btn-danger btn-xs pull-right" disabled="true" ng-if="checkPassed(task) && !task.checked">
