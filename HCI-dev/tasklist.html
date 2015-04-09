@@ -34,14 +34,14 @@
 			<div class="text-center col-10 col-offset-1" style="margin-top: 100px"ng-if="results.length<=0" >There are no matching tasks. Select another filter to view other tasks.</div>
 				<div ng-repeat-start=" task in tasks | orderBy: 'due_at' | groupBy:'due_at' | filter:codes as results"class="day-header col-12" data-ng-if="task.CHANGED" style="margin-top: 20px">
 			   		<h3 style="margin: 0px; padding-bottom: 0px">
-			   			<a id="{{task.due_at | date:'yyyy-MM-dd' }}">
+			   			<a id="{{task.due_at | date:'yyyy-MM-dd' }}" style="text-decoration: none">
 			      			<small style="font-size: 12pt" ng-if="task.due_at">{{task.due_at | date: 'longDate'}} - <small style="font-size: 11pt">{{(task.due_at | date: 'EEEE').toUpperCase()}}</small></small>
 			      			<small style="font-size: 12pt" ng-if="!task.due_at">Due Date - <small style="font-size: 11pt">NONE</small></small>
 			      		</a>
 			   		</h3>
 			   	</div>
 					<div class="zero-clipboard col-12"><span class="btn-clipboard" ng-style="supportedColors[courseList.indexOf(task.course_code)]">{{task.course_code}}</span></div>
-				  	<a class="list-group-item col-12" ng-repeat-end ng-class="{'singleTask': ($index-1 < tasks.length && tasks[$index+1].CHANGED || $index == tasks.length-1)}" ng-click="open(1,task)">
+				  	<a class="list-group-item col-12" style="cursor: pointer; cursor: hand" ng-repeat-end ng-class="{'singleTask': ($index-1 < tasks.length && tasks[$index+1].CHANGED || $index == tasks.length-1)}" ng-click="open(1,task)">
 				  		<div class="col-6" style="padding: 0px">
 				  			<h5> {{task.name}}<br><small ng-if="!(task.status==undefined)">Status: {{task.status}}</small></h5>
 				  		</div>
