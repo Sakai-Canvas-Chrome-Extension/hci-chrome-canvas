@@ -67,6 +67,7 @@ function fetchData() {
         if (xhr.readyState == 4) {
             // innerText does not let the attacker inject HTML elements.
                 classes = convertToJSON(xhr.responseText);
+                console.log(classes);
                 if(classes.errors != null) {
                     assignments_callback({error: "Invalid Access Token"});
                 } else {
@@ -87,10 +88,11 @@ function getAssignments(classes){
             url = "https://canvas.instructure.com/api/v1/courses/"+ classes[i].id +"/assignments?access_token=" + app_key;
             xhr[i].open("GET", url, true);
             xhr[i].onreadystatechange = function () {
+                console.log(xhr[i].readyState + " " + xhr[i].status);
                 if (xhr[i].readyState == 4) {
                     if (xhr[i].status == 200) {
                         assignments[classes[i].id] = convertToJSON(xhr[i].responseText);
-                    } else {
+                    } else { // 401
                         assignments[classes[i].id] = [];
                     }
                     bridgeForStepTwo(classes.length);
@@ -170,7 +172,9 @@ function conformAssignmentFields() {
 }
 
 function updateAssignmentList() {
-    console.log('e');
+    if (conformed_assignments.length == 0) {
+        finalBridge();
+    }
     for (var i = 0; i < conformed_assignments.length; i++) {
         var ass = conformed_assignments[i];
         (function (ass, i) {
@@ -216,7 +220,7 @@ function getAssignmentsFromStorage() {
         });
     }
 }
-var assignment_countdown = -1; // set by preceding function
+var assignment_countdown = 1; // set by preceding function
 var assignments_callback = null; // set by message passer
 
 function finalBridge() {

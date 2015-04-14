@@ -3,7 +3,7 @@
 	"manifest_version": 2,
 	"name": "Assignment Tasklist Tool",
 	"description": "A tasklist tool connected to Canvas for keeping track of assignments. ",
-	"version": "1.0",
+	"version": "1.2",
 	"permissions": [ "tabs",
 	  	"https://*/*","http://*/*","activeTab",
 		"storage",
